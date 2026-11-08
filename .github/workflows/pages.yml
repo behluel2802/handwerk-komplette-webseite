@@ -1,0 +1,82 @@
+# Demo-Vorschau auf GitHub Pages (Schritt 12b)
+# Baut die Seite mit Vite und veröffentlicht ausschließlich frontend/dist/ – backend/, docs/ und .env gelangen nie auf Pages.
+# In der veröffentlichten Kopie wird <meta name="robots" content="noindex"> ergänzt,
+# die Dateien im Repo bleiben unverändert (für späteres echtes Hosting, Schritt 14).
+# Einmalig nötig: Settings → Pages → Source „GitHub Actions“.
+
+name: Demo auf GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Nur ein Deploy gleichzeitig; ein laufender wird nicht abgebrochen
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # Exakt die Versionen aus package-lock.json
+      - run: npm ci
+
+      # Fertige Bilder vom letzten Lauf wiederverwenden (AVIF-Erzeugung dauert ca. 1 Minute).
+      # Das Skript prüft per Fingerabdruck selbst, was sich geändert hat.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            frontend/img
+            frontend/public/favicon.ico
+            frontend/public/icon.svg
+            frontend/public/apple-touch-icon.png
+          key: images-${{ hashFiles('frontend/img-src/**', 'frontend/images.config.js', 'frontend/scripts/images.js') }}
+          restore-keys: images-
+
+      # Erzeugt zuerst die Bilder (img-src/ → img/), dann dist/
+      - run: npm run build
+
+      # Vorkomprimierte .br/.gz nur für das eigene Backend – GitHub Pages komprimiert selbst
+      - name: Nur die gebaute Seite kopieren
+        run: |
+          cp -r frontend/dist _site
+          find _site \( -name '*.br' -o -name '*.gz' \) -delete
+
+      - name: noindex in die Demo-Kopie einfügen
+        run: |
+          for f in _site/*.html; do
+            grep -q 'name="robots"' "$f" && continue
+            sed -i 's|<meta charset="utf-8">|&\n  <meta name="robots" content="noindex">|' "$f"
+            grep -q 'name="robots"' "$f" || { echo "noindex fehlt in $f"; exit 1; }
+          done
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

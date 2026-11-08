@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{site.name}} – {{site.business}} in {{site.address.city}}</title>
+  <meta name="description" content="Elektroinstallation, Sanierung, Smart Home, PV &amp; Wallbox und 24/7-Notdienst. Ihr {{site.business}} in {{site.address.city}} seit {{site.founded}}.">
+  <meta name="theme-color" content="#0f2a4a">
+  {{> head-icons}}
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{site.name}} – {{site.business}} in {{site.address.city}}">
+  <meta property="og:description" content="Elektroinstallation, Sanierung, Smart Home, PV &amp; Wallbox und 24/7-Notdienst.">
+  <meta property="og:locale" content="de_DE">
+  <!-- TODO: og:image braucht eine absolute URL – bei echter Domain ersetzen, dazu og:url ergänzen -->
+  <meta property="og:image" content="{{site.url}}/img/hero-1280.jpg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="855">
+
+  <!-- Progressive Enhancement: Styles für JS-abhängige Elemente erst aktivieren, wenn JS läuft -->
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <script type="module" src="js/main.js"></script>
+
+  <!-- Strukturierte Daten, erzeugt aus site.json (scripts/site.js → jsonLd).
+       Keine aggregateRating: Eigene Bewertungen im LocalBusiness-Markup wertet Google nicht aus (Richtlinie „self-serving reviews“).
+       Schritt 14: image/logo als absolute URL ergänzen. -->
+  <script type="application/ld+json">
+{{{jsonLd site}}}
+  </script>
+</head>
+<body>
+  {{> sprite}}
+
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <!-- Unsichtbarer Marker ganz oben: steuert den Header-Schatten beim Scrollen -->
+  <div class="scroll-sentinel" data-scroll-sentinel aria-hidden="true"></div>
+
+  <!-- Kein id="top" am Header: #top ohne Ziel-Element springt laut HTML-Spec an den Seitenanfang.
+       Am Sticky-Header würde der Browser nur um die Header-Höhe zurückscrollen. -->
+  <header class="site-header" data-header>
+    <div class="container site-header__inner">
+      <a class="brand" href="#top" aria-label="{{site.name}} – zum Seitenanfang">
+        <span class="brand__mark" aria-hidden="true">
+          <svg class="icon"><use href="#i-bolt"/></svg>
+        </span>
+        <span class="brand__text">{{site.brand.prefix}} <strong>{{site.brand.name}}</strong></span>
+      </a>
+
+      <!-- Menü-Button direkt vor der Navigation: Tab führt nach dem Öffnen in die Menüpunkte. Sichtbar steht er rechts (CSS order). -->
+      <button class="nav-toggle" type="button" aria-controls="hauptnav" aria-expanded="false" data-nav-toggle>
+        <svg class="icon nav-toggle__open" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="icon nav-toggle__close" aria-hidden="true"><use href="#i-close"/></svg>
+        <span class="visually-hidden">Menü</span>
+      </button>
+
+      <nav class="nav" id="hauptnav" aria-label="Hauptnavigation" data-nav>
+        <ul class="nav__list">
+          <li><a class="nav__link" href="#leistungen">Leistungen</a></li>
+          <li><a class="nav__link" href="#referenzen">Referenzen</a></li>
+          <li><a class="nav__link" href="#ueber-uns">Über uns</a></li>
+          <li><a class="nav__link" href="#karriere">Karriere</a></li>
+          <li><a class="nav__link" href="#kontakt">Kontakt</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-header__actions">
+        <a class="btn btn--accent header-call" href="tel:{{site.phone.tel}}">
+          <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+          <span class="header-call__label">{{site.phone.display}}</span>
+          <span class="visually-hidden header-call__sr">Anrufen</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- 1. Hero -->
+    <section class="hero" id="hero" aria-labelledby="hero-title" data-hero>
+      <div class="hero__media" aria-hidden="true">
+        <!-- Foto: Emmanuel Ikwuegbu / Unsplash (gespiegelt), siehe img-src/CREDITS.md -->
+        {{> picture name="hero" set="main" sizes="100vw" alt="" priority=true}}
+      </div>
+      <div class="container hero__inner">
+        <p class="hero__eyebrow">
+          <svg class="icon" aria-hidden="true"><use href="#i-bolt"/></svg>
+          <span><span class="nowrap">Meisterbetrieb seit {{site.founded}}</span> · <span class="nowrap">{{site.address.city}} + {{site.areaKm}} km</span></span>
+        </p>
+        <h1 id="hero-title">Ihr {{site.business}} in&nbsp;{{site.address.city}}</h1>
+        <p class="hero__lead">Elektroinstallation, Sanierung, Smart Home und PV – zuverlässig, sauber und termintreu.</p>
+        <div class="cluster hero__actions">
+          <a class="btn btn--accent btn--lg" href="tel:{{site.phone.tel}}">
+            <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+            Jetzt anrufen
+          </a>
+          <a class="btn btn--outline-light btn--lg" href="#kontakt">
+            <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+            Anfrage senden
+          </a>
+        </div>
+        <ul class="hero__usps">
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Festpreis-Angebot</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Termin meist in 48&nbsp;h</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>24/7-Notdienst</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2. Vertrauensleiste -->
+    <section class="trust" id="vertrauen" aria-label="Warum {{site.brand.prefix}} {{site.brand.name}}">
+      <div class="container">
+        <ul class="trust__list">
+          <li class="trust__item">
+            <svg class="icon trust__icon" aria-hidden="true"><use href="#i-award"/></svg>
+            <p><strong>Meisterbetrieb</strong> <span>eingetragen in der Handwerksrolle</span></p>
+          </li>
+          <li class="trust__item">
+            <svg class="icon trust__icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+            <p><strong>Seit {{site.founded}}</strong> <span>über 25&nbsp;Jahre Erfahrung</span></p>
+          </li>
+          <li class="trust__item">
+            <svg class="icon trust__icon trust__icon--star" aria-hidden="true"><use href="#i-star"/></svg>
+            <!-- Link zum Google-Profil: site.json rating.profileUrl (leer → Text ohne Link) -->
+            <p><strong>{{decimal site.rating.value}} von 5</strong> {{#if site.rating.profileUrl}}<a href="{{site.rating.profileUrl}}">{{site.rating.count}} Google-Bewertungen</a>{{else}}<span>{{site.rating.count}} Google-Bewertungen</span>{{/if}}</p>
+          </li>
+          <li class="trust__item">
+            <svg class="icon trust__icon" aria-hidden="true"><use href="#i-clock"/></svg>
+            <p><strong>24/7-Notdienst</strong> <a href="tel:{{site.emergency.tel}}">{{site.emergency.display}}</a></p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. Leistungen -->
+    <section class="section" id="leistungen" aria-labelledby="leistungen-title">
+      <div class="container">
+        <h2 id="leistungen-title">Leistungen</h2>
+        <p class="lead section__intro">Alles aus einer Hand – für Privathaushalte, Vermieter und Gewerbe.</p>
+        <ul class="services">
+          <li class="service">
+            <span class="service__icon" aria-hidden="true"><svg class="icon"><use href="#i-plug"/></svg></span>
+            <h3>Elektroinstallation</h3>
+            <p>Neubau, Umbau, Erweiterung – vom Zählerschrank bis zur Steckdose.</p>
+          </li>
+          <li class="service">
+            <span class="service__icon" aria-hidden="true"><svg class="icon"><use href="#i-wrench"/></svg></span>
+            <h3>Altbausanierung</h3>
+            <p>Alte Leitungen raus, sichere Technik rein – sauber und mit wenig Schmutz.</p>
+          </li>
+          <li class="service">
+            <span class="service__icon" aria-hidden="true"><svg class="icon"><use href="#i-smarthome"/></svg></span>
+            <h3>Smart Home</h3>
+            <p>Licht, Heizung und Rollläden bequem per App oder Sprache steuern.</p>
+          </li>
+          <li class="service">
+            <span class="service__icon" aria-hidden="true"><svg class="icon"><use href="#i-sun"/></svg></span>
+            <h3>PV &amp; Wallbox</h3>
+            <p>Solarstrom vom eigenen Dach und Laden des E-Autos in der Garage.</p>
+          </li>
+          <li class="service">
+            <span class="service__icon" aria-hidden="true"><svg class="icon"><use href="#i-clipboard"/></svg></span>
+            <h3>E-Check</h3>
+            <p>Prüfung nach DGUV V3 für Vermieter und Gewerbe, mit Prüfprotokoll.</p>
+          </li>
+          <li class="service service--highlight">
+            <span class="service__icon" aria-hidden="true"><svg class="icon"><use href="#i-alert"/></svg></span>
+            <h3>Notdienst</h3>
+            <p>Stromausfall oder Kurzschluss? Wir sind rund um die Uhr erreichbar.</p>
+            <a class="btn btn--accent service__cta" href="tel:{{site.emergency.tel}}">
+              <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+              {{site.emergency.display}}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. Referenzen -->
+    <section class="section section--alt" id="referenzen" aria-labelledby="referenzen-title">
+      <div class="container">
+        <h2 id="referenzen-title">Referenzen</h2>
+        <p class="lead section__intro">Ein Auszug aus unseren Projekten in {{site.address.city}} und Umgebung.</p>
+
+        <!-- Fiktive Projekte: Fotos von Unsplash (siehe img-src/CREDITS.md), Objekte und Ortsteile ausgedacht -->
+        <ul class="gallery" data-gallery>
+          <li class="gallery__item">
+            <a class="gallery__link" href="{{src "ref-pv-anlage" "full" "jpg"}}" data-full="{{src "ref-pv-anlage" "full" "webp"}}" data-width="{{dim "ref-pv-anlage" "full" "width"}}" data-height="{{dim "ref-pv-anlage" "full" "height"}}">
+              {{> picture name="ref-pv-anlage" set="tile" sizes="(min-width: 72em) 352px, (min-width: 60em) 30vw, (min-width: 30em) 46vw, 92vw" alt="Einfamilienhaus mit Solarmodulen auf dem Dach" lazy=true}}
+              <span class="gallery__zoom" aria-hidden="true"><svg class="icon"><use href="#i-zoom"/></svg></span>
+            </a>
+            <p class="gallery__caption"><strong>PV-Anlage</strong> <span>Einfamilienhaus, {{site.address.city}}-Nord</span></p>
+          </li>
+          <li class="gallery__item">
+            <a class="gallery__link" href="{{src "ref-kueche" "full" "jpg"}}" data-full="{{src "ref-kueche" "full" "webp"}}" data-width="{{dim "ref-kueche" "full" "width"}}" data-height="{{dim "ref-kueche" "full" "height"}}">
+              {{> picture name="ref-kueche" set="tile" sizes="(min-width: 72em) 352px, (min-width: 60em) 30vw, (min-width: 30em) 46vw, 92vw" alt="Helle Küche mit Kochinsel und drei Pendelleuchten" lazy=true}}
+              <span class="gallery__zoom" aria-hidden="true"><svg class="icon"><use href="#i-zoom"/></svg></span>
+            </a>
+            <p class="gallery__caption"><strong>Küchen&shy;beleuchtung</strong> <span>Altbausanierung, {{site.address.city}}-Ost</span></p>
+          </li>
+          <li class="gallery__item">
+            <a class="gallery__link" href="{{src "ref-unterverteilung" "full" "jpg"}}" data-full="{{src "ref-unterverteilung" "full" "webp"}}" data-width="{{dim "ref-unterverteilung" "full" "width"}}" data-height="{{dim "ref-unterverteilung" "full" "height"}}">
+              {{> picture name="ref-unterverteilung" set="tile" sizes="(min-width: 72em) 352px, (min-width: 60em) 30vw, (min-width: 30em) 46vw, 92vw" alt="Geöffnete Unterverteilung mit Leitungsschutzschaltern und sauber verlegten Adern" lazy=true}}
+              <span class="gallery__zoom" aria-hidden="true"><svg class="icon"><use href="#i-zoom"/></svg></span>
+            </a>
+            <p class="gallery__caption"><strong>Unter&shy;verteilung</strong> <span>Mehrfamilienhaus, {{site.address.city}}-Mitte</span></p>
+          </li>
+          <li class="gallery__item">
+            <a class="gallery__link" href="{{src "ref-wallbox" "full" "jpg"}}" data-full="{{src "ref-wallbox" "full" "webp"}}" data-width="{{dim "ref-wallbox" "full" "width"}}" data-height="{{dim "ref-wallbox" "full" "height"}}">
+              {{> picture name="ref-wallbox" set="tile" sizes="(min-width: 72em) 352px, (min-width: 60em) 30vw, (min-width: 30em) 46vw, 92vw" alt="Elektroauto lädt an einer Wallbox an der Garagenwand" lazy=true}}
+              <span class="gallery__zoom" aria-hidden="true"><svg class="icon"><use href="#i-zoom"/></svg></span>
+            </a>
+            <p class="gallery__caption"><strong>Wallbox</strong> <span>Doppelgarage, {{site.address.city}}-Süd</span></p>
+          </li>
+          <li class="gallery__item">
+            <a class="gallery__link" href="{{src "ref-bad" "full" "jpg"}}" data-full="{{src "ref-bad" "full" "webp"}}" data-width="{{dim "ref-bad" "full" "width"}}" data-height="{{dim "ref-bad" "full" "height"}}">
+              {{> picture name="ref-bad" set="tile" sizes="(min-width: 72em) 352px, (min-width: 60em) 30vw, (min-width: 30em) 46vw, 92vw" alt="Modernes Bad mit beleuchtetem Spiegel" lazy=true}}
+              <span class="gallery__zoom" aria-hidden="true"><svg class="icon"><use href="#i-zoom"/></svg></span>
+            </a>
+            <p class="gallery__caption"><strong>Bad mit LED-Spiegel</strong> <span>Wohnungssanierung, {{site.address.city}}-Mitte</span></p>
+          </li>
+          <li class="gallery__item">
+            <a class="gallery__link" href="{{src "ref-smarthome" "full" "jpg"}}" data-full="{{src "ref-smarthome" "full" "webp"}}" data-width="{{dim "ref-smarthome" "full" "width"}}" data-height="{{dim "ref-smarthome" "full" "height"}}">
+              {{> picture name="ref-smarthome" set="tile" sizes="(min-width: 72em) 352px, (min-width: 60em) 30vw, (min-width: 30em) 46vw, 92vw" alt="Smart-Home-Taster neben einer Zimmertür" lazy=true}}
+              <span class="gallery__zoom" aria-hidden="true"><svg class="icon"><use href="#i-zoom"/></svg></span>
+            </a>
+            <p class="gallery__caption"><strong>Smart Home</strong> <span>Neubau, {{site.address.city}}-West</span></p>
+          </li>
+        </ul>
+
+        <!-- Fiktive Kundenstimmen (Übungsprojekt) -->
+        <div class="reviews">
+          <div class="reviews__head">
+            <h3>Das sagen unsere Kunden</h3>
+            <p class="reviews__score">
+              <span class="review__stars" aria-hidden="true"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></span>
+              <span><strong>{{decimal site.rating.value}} von 5</strong> aus {{site.rating.count}} Google-Bewertungen</span>
+            </p>
+          </div>
+          <ul class="reviews__list">
+            <li class="review">
+              <figure>
+                <p class="review__stars" role="img" aria-label="5 von 5 Sternen"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></p>
+                <blockquote><p>„Wallbox und neuer Zählerschrank an einem Tag – pünktlich, sauber und alles verständlich erklärt. Klare Empfehlung!“</p></blockquote>
+                <figcaption><strong>Familie K.</strong>, {{site.address.city}} · Wallbox</figcaption>
+              </figure>
+            </li>
+            <li class="review">
+              <figure>
+                <p class="review__stars" role="img" aria-label="5 von 5 Sternen"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></p>
+                <blockquote><p>„Kurzschluss am Sonntagabend, und nach kurzer Zeit stand jemand vor der Tür. Freundlich, schnell und fair abgerechnet.“</p></blockquote>
+                <figcaption><strong>Sabine M.</strong>, {{site.address.city}} · Notdienst</figcaption>
+              </figure>
+            </li>
+            <li class="review">
+              <figure>
+                <p class="review__stars" role="img" aria-label="5 von 5 Sternen"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></p>
+                <blockquote><p>„Wir lassen unsere Mietobjekte jedes Jahr prüfen. Der E-Check läuft reibungslos, Termine werden immer eingehalten.“</p></blockquote>
+                <figcaption><strong>Hausverwaltung R.</strong>, {{site.address.city}} · E-Check</figcaption>
+              </figure>
+            </li>
+          </ul>
+          <!-- Nur mit Link zum Google-Profil (site.json rating.profileUrl) -->
+          {{#if site.rating.profileUrl}}
+          <a class="btn btn--outline reviews__cta" href="{{site.rating.profileUrl}}">
+            <svg class="icon" aria-hidden="true"><use href="#i-star"/></svg>
+            Alle Bewertungen auf Google
+          </a>
+          {{/if}}
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Über uns -->
+    <section class="section" id="ueber-uns" aria-labelledby="ueber-uns-title">
+      <div class="container">
+        <div class="about">
+          <div class="about__media">
+            <!-- Foto: Ewan Buck / Unsplash, siehe img-src/CREDITS.md. Desktop Hochformat, darunter 4:3-Ausschnitt -->
+            <picture>
+              <source media="(min-width: 48em)" type="image/avif" srcset="{{srcset "about" "portrait" "avif"}}" sizes="(min-width: 72em) 440px, 40vw" width="{{dim "about" "portrait" "width"}}" height="{{dim "about" "portrait" "height"}}">
+              <source media="(min-width: 48em)" type="image/webp" srcset="{{srcset "about" "portrait" "webp"}}" sizes="(min-width: 72em) 440px, 40vw" width="{{dim "about" "portrait" "width"}}" height="{{dim "about" "portrait" "height"}}">
+              <source media="(min-width: 48em)" srcset="{{srcset "about" "portrait" "jpg"}}" sizes="(min-width: 72em) 440px, 40vw" width="{{dim "about" "portrait" "width"}}" height="{{dim "about" "portrait" "height"}}">
+              <source type="image/avif" srcset="{{srcset "about" "wide" "avif"}}" sizes="92vw">
+              <source type="image/webp" srcset="{{srcset "about" "wide" "webp"}}" sizes="92vw">
+              <img src="{{src "about" "wide" "jpg"}}" srcset="{{srcset "about" "wide" "jpg"}}" sizes="92vw"
+                   width="{{dim "about" "wide" "width"}}" height="{{dim "about" "wide" "height"}}" alt="Elektriker montiert eine Pendelleuchte in einem Raum mit Holzlamellen-Wand" loading="lazy" decoding="async">
+            </picture>
+          </div>
+
+          <div class="about__body">
+            <h2 id="ueber-uns-title">Über uns</h2>
+            <p>{{site.founded}} hat {{site.owner.title}} {{site.owner.name}} den Betrieb in {{site.address.city}} gegründet. Heute sind wir ein Team aus acht Leuten, darunter zwei Auszubildende, und kümmern uns um Privathaushalte, Vermieter und Gewerbe im Umkreis von rund {{site.areaKm}}&nbsp;Kilometern.</p>
+            <p>Als eingetragener Meisterbetrieb arbeiten wir nach den aktuellen Normen und Vorschriften – und bilden selbst aus, damit gutes Handwerk in der Region bleibt.</p>
+            <ul class="about__badges">
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Eingetragen in der Handwerksrolle</li>
+              <!-- Innung ist ein Platzhalter (fiktiver Betrieb) -->
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Mitglied der Elektro-Innung</li>
+            </ul>
+            <!-- Fiktives Zitat (Übungsprojekt) -->
+            <figure class="about__quote">
+              <blockquote>
+                <p>„Bei uns bekommen Sie einen festen Ansprechpartner, ein ehrliches Angebot und eine Baustelle, die wir sauber hinterlassen.“</p>
+              </blockquote>
+              <figcaption><strong>{{site.owner.name}}</strong> {{site.owner.title}} und Inhaber</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <ul class="facts" aria-label="{{site.brand.prefix}} {{site.brand.name}} in Zahlen">
+          <li class="facts__item"><strong class="facts__value">{{site.founded}}</strong> <span>gegründet</span></li>
+          <li class="facts__item"><strong class="facts__value">{{site.team.total}}</strong> <span>Mitarbeitende</span></li>
+          <li class="facts__item"><strong class="facts__value">{{site.team.apprentices}}</strong> <span>Auszubildende</span></li>
+          <li class="facts__item"><strong class="facts__value"><small>ca.</small> {{site.areaKm}}&nbsp;km</strong> <span>Einzugsgebiet</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 6. Ablauf -->
+    <section class="section section--alt" id="ablauf" aria-labelledby="ablauf-title">
+      <div class="container">
+        <h2 id="ablauf-title">So läuft's ab</h2>
+        <p class="lead section__intro">Von der ersten Anfrage bis zur fertigen Anlage – in vier klaren Schritten.</p>
+        <ol class="steps">
+          <li class="step">
+            <span class="step__num" aria-hidden="true">1</span>
+            <div>
+              <h3>Anfrage</h3>
+              <p>Rufen Sie an oder nutzen Sie das Formular. Kurz schildern, worum es geht.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step__num" aria-hidden="true">2</span>
+            <div>
+              <h3>Besichtigung</h3>
+              <p>Wir schauen uns alles vor Ort an, Termin meist innerhalb von 48&nbsp;Stunden.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step__num" aria-hidden="true">3</span>
+            <div>
+              <h3>Angebot</h3>
+              <p>Sie bekommen ein verständliches Festpreis-Angebot, ohne versteckte Kosten.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step__num" aria-hidden="true">4</span>
+            <div>
+              <h3>Umsetzung</h3>
+              <p>Wir arbeiten sauber und termintreu und übergeben alles mit Dokumentation.</p>
+            </div>
+          </li>
+        </ol>
+
+        <!-- Container Query: Layout richtet sich nach der Breite der Box -->
+        <div class="cta-box">
+          <div class="cta-box__inner">
+            <p class="cta-box__text">Bereit für Schritt&nbsp;1?</p>
+            <div class="cta-box__actions">
+              <a class="btn btn--accent" href="tel:{{site.phone.tel}}">
+                <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+                Jetzt anrufen
+              </a>
+              <a class="btn btn--primary" href="#kontakt">
+                <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                Anfrage senden
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Karriere -->
+    <section class="section section--dark" id="karriere" aria-labelledby="karriere-title">
+      <div class="container">
+        <h2 id="karriere-title">Wir suchen Verstärkung</h2>
+        <p class="lead section__intro">Wir sind ein Team aus acht Leuten – und suchen Verstärkung, die Lust auf saubere Arbeit und abwechslungsreiche Aufgaben hat.</p>
+
+        <!-- Stelleninhalte und Vorteile teils fiktiv (Platzhalter). „Freitags um 14 Uhr“ an die Öffnungszeiten anpassen -->
+        <div class="career">
+          <div class="career__jobs">
+            <h3 class="visually-hidden">Offene Stellen</h3>
+
+            <article class="job" aria-labelledby="job-geselle-title">
+              <h4 class="job__title" id="job-geselle-title">Elektroniker/in für Energie- und Gebäudetechnik (m/w/d)</h4>
+              <ul class="job__meta" aria-label="Eckdaten">
+                <li>Vollzeit</li>
+                <li>unbefristet</li>
+                <li>ab sofort</li>
+              </ul>
+              <p>Installation, Sanierung, PV und Wallbox, Smart Home – bei uns wird es nicht langweilig.</p>
+              <details class="job__details">
+                <summary>
+                  Aufgaben und Anforderungen
+                  <svg class="icon job__chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+                </summary>
+                <div class="job__body">
+                  <h5>Ihre Aufgaben</h5>
+                  <ul class="job__list">
+                    <li>Elektroinstallation in Neubau, Umbau und Altbau</li>
+                    <li>Montage von PV-Anlagen, Wallboxen und Smart-Home-Technik</li>
+                    <li>Prüfungen nach DGUV V3 (E&#8209;Check) mit Protokoll</li>
+                    <li>Notdienst-Bereitschaft im Wechsel mit dem Team</li>
+                  </ul>
+                  <h5>Das bringen Sie mit</h5>
+                  <ul class="job__list">
+                    <li>Abgeschlossene Ausbildung als Elektroniker/in oder vergleichbar</li>
+                    <li>Führerschein Klasse B</li>
+                    <li>Zuverlässigkeit und freundlicher Umgang mit Kunden</li>
+                  </ul>
+                  <a class="job__apply" href="mailto:{{site.email}}?subject=Bewerbung%20als%20Elektroniker%2Fin">
+                    <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                    Per E-Mail bewerben
+                  </a>
+                </div>
+              </details>
+            </article>
+
+            <article class="job" aria-labelledby="job-azubi-title">
+              <h4 class="job__title" id="job-azubi-title">Ausbildung Elektroniker/in für Energie- und Gebäudetechnik (m/w/d)</h4>
+              <ul class="job__meta" aria-label="Eckdaten">
+                <li>Start jeweils 1.&nbsp;August</li>
+                <li>3,5&nbsp;Jahre</li>
+                <li>Übernahme möglich</li>
+              </ul>
+              <p>Vom ersten Tag an mit auf der Baustelle – mit festem Ansprechpartner im Team.</p>
+              <details class="job__details">
+                <summary>
+                  Ausbildung und Voraussetzungen
+                  <svg class="icon job__chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+                </summary>
+                <div class="job__body">
+                  <h5>Das erwartet Sie</h5>
+                  <ul class="job__list">
+                    <li>Duale Ausbildung im Betrieb und in der Berufsschule</li>
+                    <li>Abwechslung von der Steckdose bis zur PV-Anlage</li>
+                    <li>Übernahme bei guten Leistungen</li>
+                  </ul>
+                  <h5>Das bringen Sie mit</h5>
+                  <ul class="job__list">
+                    <li>Haupt- oder Realschulabschluss</li>
+                    <li>Interesse an Technik, Mathe und Physik</li>
+                    <li>Handwerkliches Geschick und Teamgeist</li>
+                  </ul>
+                  <a class="job__apply" href="mailto:{{site.email}}?subject=Bewerbung%20um%20einen%20Ausbildungsplatz">
+                    <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                    Per E-Mail bewerben
+                  </a>
+                </div>
+              </details>
+            </article>
+          </div>
+
+          <div class="career__perks">
+            <h3>Was Sie bei uns erwartet</h3>
+            <ul class="perks">
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Freitags um 14&nbsp;Uhr Feierabend</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Kurze Wege: Einsätze im Umkreis von ca. {{site.areaKm}}&nbsp;km, keine Montage</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Kleines Team mit direktem Draht zum Chef</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Sicherer Arbeitsplatz im Meisterbetrieb seit {{site.founded}}</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Weiterbildung, z.&nbsp;B. bis zur Meisterprüfung</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Modernes Werkzeug und Messtechnik</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Eigenes Firmenfahrzeug</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Gleiche CTA-Box wie im Ablauf (Container Query) -->
+        <div class="cta-box cta-box--dark">
+          <div class="cta-box__inner">
+            <div>
+              <p class="cta-box__text">Bewerben in 2&nbsp;Minuten</p>
+              <p class="cta-box__sub">Kein Anschreiben nötig: Ein kurzer Anruf oder Ihr Lebenslauf per E&#8209;Mail genügt. Ansprechpartner ist {{site.owner.name}}.</p>
+            </div>
+            <div class="cta-box__actions">
+              <a class="btn btn--accent" href="tel:{{site.phone.tel}}">
+                <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+                Anrufen
+              </a>
+              <a class="btn btn--outline-light" href="mailto:{{site.email}}?subject=Bewerbung">
+                <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                E-Mail
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Kontakt -->
+    <section class="section" id="kontakt" aria-labelledby="kontakt-title">
+      <div class="container">
+        <h2 id="kontakt-title">Kontakt</h2>
+        <p class="lead section__intro">Am schnellsten geht es per Telefon. Oder Sie schreiben uns kurz – wir melden uns {{site.responseTime}}.</p>
+
+        <div class="contact">
+          <!-- Weg 1: Anruf (mobil zuerst) -->
+          <div class="contact__info">
+            <h3 class="contact__heading">Am schnellsten: anrufen</h3>
+            <a class="btn btn--accent btn--lg contact__call" href="tel:{{site.phone.tel}}">
+              <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+              {{site.phone.display}}
+            </a>
+            <!-- Wird per JS aus js/hours.js befüllt (Öffnungszeiten und Feiertage des Bundeslands aus site.json) -->
+            <p class="open-status" data-open-status hidden>
+              <span class="open-status__dot" aria-hidden="true"></span>
+              <span data-open-status-text></span>
+            </p>
+
+            <!-- Zeiten aus site.json (hours.week) -->
+            <table class="hours">
+              <caption class="visually-hidden">Telefonische Erreichbarkeit</caption>
+              {{#each site.hours.week}}
+              <tr><th scope="row">{{dayRange days}}</th><td>{{time from}}–{{time to}}&nbsp;Uhr</td></tr>
+              {{/each}}
+            </table>
+            <p class="contact__small">An Feiertagen{{#if site.hours.closedDays}} sowie an {{joinAnd site.hours.closedDays}}{{/if}} geschlossen.</p>
+
+            <p class="contact__alt">
+              Lieber per E-Mail?
+              <a href="mailto:{{site.email}}">{{site.email}}</a>
+            </p>
+
+            <div class="contact__emergency">
+              <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+              <p><strong>Stromausfall oder Kurzschluss?</strong> Unser Notdienst ist rund um die Uhr erreichbar.</p>
+              <a class="btn btn--accent contact__emergency-btn" href="tel:{{site.emergency.tel}}">
+                <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+                Notdienst {{site.emergency.display}}
+              </a>
+            </div>
+
+            <p class="contact__area">
+              <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>
+              <span>
+                Wir kommen zu Ihnen – im Umkreis von ca. {{site.areaKm}}&nbsp;km um {{site.address.city}}.
+                <!-- Trennpunkte per CSS: am Zeilenanfang werden sie abgeschnitten, beim Umbruch also ausgeblendet -->
+                <span class="contact__address"><span class="contact__address-list"><span>{{site.name}}</span> <span>{{site.address.street}}</span> <span>{{site.address.zip}} {{site.address.city}}</span></span></span>
+              </span>
+            </p>
+          </div>
+
+          <!-- Weg 2: kurzes Formular, sendet direkt auf der Seite -->
+          <div class="contact__form"><!-- Container für die Chip-Spalten -->
+            <!--
+              Versand per fetch an data-endpoint (eigenes Backend, Schritt 11b).
+              Ohne Backend (z. B. GitHub-Pages-Demo) → Demo-Modus: prüfen, Bestätigung zeigen, nichts senden.
+              Ohne JS: normales POST an action.
+            -->
+            <form class="contact-form" action="/api/kontakt" method="post" data-contact-form data-endpoint="/api/kontakt">
+              <h3 class="contact-form__title">Oder schreiben Sie uns</h3>
+              <p class="contact-form__hint">Pflichtfelder sind mit <span aria-hidden="true">*</span><span class="visually-hidden">Stern</span> markiert.</p>
+
+              <fieldset class="chips">
+                <legend>Worum geht es? <span class="field__opt">(optional)</span></legend>
+                <div class="chips__list">
+                  <label class="chip"><input type="radio" name="anliegen" value="Elektroinstallation"><span>Installation</span></label>
+                  <label class="chip"><input type="radio" name="anliegen" value="Altbausanierung"><span>Sanierung</span></label>
+                  <label class="chip"><input type="radio" name="anliegen" value="Smart Home"><span>Smart Home</span></label>
+                  <label class="chip"><input type="radio" name="anliegen" value="PV &amp; Wallbox"><span>PV &amp; Wallbox</span></label>
+                  <label class="chip"><input type="radio" name="anliegen" value="E-Check"><span>E&#8209;Check</span></label>
+                  <label class="chip"><input type="radio" name="anliegen" value="Sonstiges"><span>Sonstiges</span></label>
+                </div>
+              </fieldset>
+
+              <div class="field">
+                <label for="cf-name">Name <span class="field__req" aria-hidden="true">*</span></label>
+                <input id="cf-name" name="name" type="text" autocomplete="name" required maxlength="100" aria-describedby="cf-name-error">
+                <p class="field__error" id="cf-name-error" hidden></p>
+              </div>
+
+              <div class="field">
+                <label for="cf-contact">Telefon oder E-Mail <span class="field__req" aria-hidden="true">*</span></label>
+                <input id="cf-contact" name="kontakt" type="text" required maxlength="200" aria-describedby="cf-contact-hint cf-contact-error">
+                <p class="field__hint" id="cf-contact-hint">Wir melden uns auf dem Weg, den Sie angeben.</p>
+                <p class="field__error" id="cf-contact-error" hidden></p>
+              </div>
+
+              <div class="field">
+                <label for="cf-message">Nachricht <span class="field__req" aria-hidden="true">*</span></label>
+                <textarea id="cf-message" name="nachricht" rows="4" required minlength="10" maxlength="5000" aria-describedby="cf-message-error"
+                          placeholder="z. B. Wir möchten eine Wallbox in der Garage installieren lassen."></textarea>
+                <p class="field__error" id="cf-message-error" hidden></p>
+              </div>
+
+              <!-- Honeypot gegen Spam-Bots: für Menschen unsichtbar, muss leer bleiben -->
+              <div class="contact-form__hp" aria-hidden="true">
+                <label for="cf-website">Website</label>
+                <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off">
+              </div>
+
+              <button class="btn btn--primary btn--lg contact-form__submit" type="submit">
+                <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                Anfrage senden
+              </button>
+              <p class="contact-form__note">Ihre Angaben verwenden wir nur zur Bearbeitung Ihrer Anfrage. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
+
+              <div class="form-status" data-form-status role="status" tabindex="-1"></div>
+            </form>
+
+            <!-- Bestätigung ersetzt das Formular nach dem Absenden -->
+            <div class="form-success" data-form-success tabindex="-1" hidden>
+              <svg class="icon form-success__icon" aria-hidden="true"><use href="#i-check"/></svg>
+              <h3 class="form-success__title" data-form-success-title>Vielen Dank!</h3>
+              <p>Ihre Anfrage ist bei uns angekommen. Wir melden uns {{site.responseTime}}.</p>
+              <p class="form-success__demo" data-form-demo hidden>Demo-Version: In dieser Vorschau wird keine Anfrage verschickt.</p>
+              <p class="contact__small">Eilig? Rufen Sie uns an: <a href="tel:{{site.phone.tel}}">{{site.phone.display}}</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 9. Footer -->
+  {{> footer}}
+
+  <!-- Lightbox für die Referenzen (wird per JS befüllt) -->
+  <dialog class="lightbox" aria-label="Projektfoto" data-lightbox>
+    <button class="lightbox__btn lightbox__close" type="button" data-lightbox-close>
+      <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+      <span class="visually-hidden">Schließen</span>
+    </button>
+    <figure class="lightbox__figure">
+      <img class="lightbox__img" src="data:," alt="" data-lightbox-img>
+      <figcaption class="lightbox__caption">
+        <span data-lightbox-caption></span>
+        <span class="lightbox__counter" data-lightbox-counter></span>
+      </figcaption>
+    </figure>
+    <button class="lightbox__btn lightbox__prev" type="button" data-lightbox-prev>
+      <svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+      <span class="visually-hidden">Vorheriges Bild</span>
+    </button>
+    <button class="lightbox__btn lightbox__next" type="button" data-lightbox-next>
+      <svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+      <span class="visually-hidden">Nächstes Bild</span>
+    </button>
+  </dialog>
+
+  <!-- Feste Anruf-Leiste (nur mobil). Ohne JS immer sichtbar, mit JS erst nach dem Hero. -->
+  <div class="call-bar" data-call-bar>
+    <a class="call-bar__item call-bar__item--call" href="tel:{{site.phone.tel}}">
+      <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+      Anrufen
+    </a>
+    <a class="call-bar__item" href="#kontakt">
+      <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+      Anfrage
+    </a>
+  </div>
+</body>
+</html>

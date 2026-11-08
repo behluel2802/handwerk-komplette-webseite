@@ -1,0 +1,1619 @@
+/* ==========================================================================
+   Abschnitte
+   Reihenfolge wie in index.html: Header, Hero, Vertrauen, Leistungen,
+   Referenzen, Über uns, Ablauf, Karriere, Kontakt, Footer, Anruf-Leiste.
+   Mobile-first; Desktop ab 60em (960px).
+   ========================================================================== */
+
+/* --- Header -------------------------------------------------------------- */
+.scroll-sentinel {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  width: 1px;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow var(--transition);
+}
+
+.site-header.is-scrolled {
+  box-shadow: var(--shadow-header);
+}
+
+.site-header__inner {
+  position: relative; /* Bezug für das mobile Menü-Panel */
+  display: flex;
+  flex-wrap: wrap;    /* ohne JS bricht die Navigation mobil in eine zweite Zeile */
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--header-height);
+}
+
+/* Mobil sichtbar: Logo | Anruf-Button, Menü-Button. Im HTML steht der Menü-Button vor der Navigation (Tab-Reihenfolge). */
+.site-header__actions { order: 1; margin-left: auto; }
+.nav-toggle { order: 2; }
+
+/* Logo */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-lg);
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand:hover { color: var(--color-primary); }
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-accent);
+}
+
+.brand__mark .icon { width: 1.35rem; height: 1.35rem; }
+.brand__text strong { font-weight: var(--fw-bold); }
+
+/* Rechte Seite: Anruf-Button + Menü-Toggle */
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Mobil: Anruf-Button nur als Icon */
+.header-call {
+  padding-inline: var(--space-3);
+  width: var(--tap-min);
+}
+
+.header-call__label { display: none; }
+
+.nav-toggle {
+  display: none; /* nur mit JS sichtbar, siehe unten */
+  place-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.nav-toggle .icon { width: 1.5rem; height: 1.5rem; }
+.nav-toggle__close { display: none; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__open { display: none; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__close { display: block; }
+
+/* Navigation – Basis (ohne JS: horizontal scrollbare Zeile unter dem Logo) */
+.nav {
+  order: 3;
+  width: 100%;
+}
+
+.nav__list {
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.nav__link {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav__link:hover {
+  color: var(--color-primary);
+  background: var(--color-surface);
+}
+
+/* Mobil mit JS: Toggle zeigen, Navigation als ausklappbares Panel */
+@media (max-width: 59.99em) {
+  .js .nav-toggle { display: grid; }
+
+  .js .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    width: auto;
+    padding: var(--space-3) var(--container-pad) var(--space-5);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+  }
+
+  .js .nav.is-open { display: block; }
+
+  .js .nav__list {
+    flex-direction: column;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .js .nav__link {
+    min-height: 3rem;
+    font-size: var(--fs-lg);
+  }
+}
+
+/* Desktop */
+@media (min-width: 60em) {
+  .site-header__inner {
+    flex-wrap: nowrap;
+    gap: var(--space-4);
+  }
+
+  .nav {
+    order: 0;
+    width: auto;
+  }
+
+  .site-header__actions { margin-left: 0; }
+
+  .nav__list {
+    overflow: visible;
+    padding: 0;
+  }
+
+  .header-call {
+    width: auto;
+    padding-inline: var(--space-5);
+  }
+
+  .header-call__label { display: inline; }
+  .header-call__sr { display: none; }
+}
+
+/* --- Hero ---------------------------------------------------------------- */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: min(38rem, calc(100svh - var(--header-height)));
+  padding-block: var(--space-8);
+  background: var(--hero-placeholder);
+  color: var(--color-on-primary);
+}
+
+/* Foto-Ebene (ab Schritt 5) mit Overlay darüber */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero__media picture,
+.hero__media img {
+  width: 100%;
+  height: 100%;
+}
+
+.hero__media img {
+  object-fit: cover;
+  object-position: 70% 30%; /* Gesicht und Hände bleiben auch im schmalen Zuschnitt sichtbar */
+}
+
+.hero__media:has(img)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hero-overlay-mobile); /* mobil liegt Text über dem ganzen Bild */
+}
+
+@media (min-width: 60em) {
+  .hero__media:has(img)::after { background: var(--hero-overlay); }
+}
+
+.hero__inner > * { max-width: 42rem; }
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-accent-soft);
+  border-radius: var(--radius-lg); /* kein Pill: sieht bei Umbruch auf dem Handy besser aus */
+  color: var(--color-accent);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.hero__eyebrow .icon { width: 1rem; height: 1rem; }
+
+.hero h1 { color: var(--color-on-primary); }
+
+.hero__lead {
+  margin-block: var(--space-4) var(--space-6);
+  font-size: var(--fs-lg);
+  color: var(--color-on-primary-muted);
+}
+
+.hero__actions { gap: var(--space-3); }
+
+@media (max-width: 29.99em) {
+  .hero__actions .btn { width: 100%; } /* Kleine Handys: Buttons untereinander, volle Breite */
+}
+
+.hero__usps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-top: var(--space-6);
+  padding: 0;
+  list-style: none;
+  color: var(--color-on-primary-muted);
+}
+
+.hero__usps li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hero__usps .icon { color: var(--color-accent); }
+
+/* --- Vertrauensleiste ---------------------------------------------------- */
+.trust {
+  padding-block: var(--space-5);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trust__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 × 2, gleich breite Spalten */
+  gap: var(--space-5) var(--space-4);
+}
+
+.trust__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+
+.trust__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-primary);
+}
+
+.trust__icon--star { color: var(--color-star); }
+
+.trust__item strong {
+  display: block;
+  color: var(--color-primary);
+  font-size: var(--fs-base);
+}
+
+.trust__item span { color: var(--color-text-muted); }
+
+/* Links in der Leiste (Google, Notdienst) mit ausreichend Klickfläche */
+.trust__item a {
+  display: inline-block;
+  padding-block: var(--space-1);
+  font-weight: var(--fw-semibold);
+}
+
+.trust__item a[href^="tel:"] { white-space: nowrap; }
+
+/* Handy: Icon über dem Text, zentriert – volle Spaltenbreite für den Text */
+@media (max-width: 39.99em) {
+  .trust__item {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    text-align: center;
+  }
+}
+
+@media (min-width: 60em) {
+  .trust__list { grid-template-columns: repeat(4, 1fr); }
+  .trust__item { align-items: center; gap: var(--space-3); }
+  .trust__icon { width: 1.75rem; height: 1.75rem; }
+}
+
+/* --- Leistungen ---------------------------------------------------------- */
+.section__intro {
+  max-width: 48rem;
+  margin-top: calc(-1 * var(--space-3));
+  margin-bottom: var(--space-6);
+}
+
+.services {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 40em) {
+  .services { grid-template-columns: repeat(2, 1fr); gap: var(--space-5); }
+}
+
+@media (min-width: 60em) {
+  .services { grid-template-columns: repeat(3, 1fr); }
+}
+
+.service {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.service__icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-tint);
+  color: var(--color-primary);
+}
+
+.service__icon .icon { width: 1.6rem; height: 1.6rem; }
+
+.service h3 { font-size: var(--fs-lg); }
+.service p { color: var(--color-text-muted); }
+
+/* Notdienst: hervorgehoben */
+.service--highlight {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.service--highlight .service__icon {
+  background: var(--color-primary-light);
+  color: var(--color-accent);
+}
+
+.service--highlight h3 { color: var(--color-on-primary); }
+.service--highlight p { color: var(--color-on-primary-muted); }
+
+.service__cta {
+  align-self: flex-start;
+  margin-top: auto; /* Button unten bündig, auch bei unterschiedlich langen Texten */
+}
+
+/* --- Referenzen: Galerie ------------------------------------------------- */
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr; /* Handy: 1 Spalte */
+  gap: var(--space-5) var(--space-4);
+}
+
+@media (min-width: 30em) {
+  .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Schmale 2-Spalten-Ansicht: kleinere Lupe */
+@media (min-width: 30em) and (max-width: 39.99em) {
+  .gallery__zoom { width: 1.75rem; height: 1.75rem; }
+  .gallery__zoom .icon { width: 1rem; height: 1rem; }
+}
+
+@media (min-width: 60em) {
+  .gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6) var(--space-5); }
+}
+
+.gallery__link {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.gallery__link img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.gallery__link:hover img { transform: scale(1.04); }
+
+.gallery__zoom {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--gallery-zoom-bg);
+  color: var(--color-on-primary);
+}
+
+.gallery__caption {
+  margin-top: var(--space-2);
+  overflow-wrap: break-word; /* lange Wörter auf kleinen Handys umbrechen */
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+
+.gallery__caption strong {
+  display: block;
+  color: var(--color-primary);
+  font-size: var(--fs-base);
+}
+
+.gallery__caption span { color: var(--color-text-muted); }
+
+/* --- Referenzen: Kundenstimmen ------------------------------------------- */
+.reviews { margin-top: var(--space-8); }
+
+.reviews__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.reviews__score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.reviews__score strong { color: var(--color-primary); }
+
+.review__stars {
+  display: inline-flex;
+  gap: 0.1rem;
+  color: var(--color-star);
+}
+
+.review__stars .icon { width: 1.1rem; height: 1.1rem; }
+
+.reviews__list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 60em) {
+  .reviews__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+}
+
+.review figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-5);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.review blockquote { flex-grow: 1; }
+
+.review figcaption {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.review figcaption strong { color: var(--color-text); }
+
+.reviews__cta { margin-top: var(--space-6); }
+
+/* --- Über uns ------------------------------------------------------------ */
+.about {
+  display: grid;
+  gap: var(--space-6);
+}
+
+/* Ab Tablet zweispaltig: Foto im Hochformat links (Bildwechsel per <picture media>) */
+@media (min-width: 48em) {
+  .about {
+    grid-template-columns: 5fr 7fr;
+    align-items: center;
+    gap: var(--space-6);
+  }
+}
+
+@media (min-width: 60em) {
+  .about { gap: var(--space-8); }
+}
+
+.about__media img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.about__body h2 { margin-bottom: var(--space-4); }
+
+.about__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.about__badges li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.about__badges .icon { color: var(--color-success); }
+
+.about__quote {
+  margin-top: var(--space-6);
+  padding-left: var(--space-5);
+  border-left: 4px solid var(--color-accent);
+}
+
+.about__quote blockquote {
+  font-size: var(--fs-lg);
+  font-style: italic;
+  color: var(--color-primary);
+}
+
+.about__quote figcaption {
+  margin-top: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.about__quote figcaption strong {
+  display: block;
+  color: var(--color-text);
+  font-size: var(--fs-base);
+}
+
+/* Kennzahlen */
+.facts {
+  display: grid;
+  grid-template-columns: 1fr; /* Handy: untereinander */
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}
+
+@media (min-width: 30em) {
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 40em) {
+  .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-5); }
+}
+
+.facts__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-5) var(--space-3);
+  border-top: 3px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.facts__value {
+  color: var(--color-primary);
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-tight);
+  white-space: nowrap;
+}
+
+.facts__value small {
+  font-size: 0.55em;
+  font-weight: var(--fw-semibold);
+}
+
+.facts__item span {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+/* --- Ablauf ------------------------------------------------------------- */
+/* Mobil/Tablet: vertikale Zeitleiste, ab 60em horizontal mit Verbindungslinie */
+.steps {
+  --step-size: 3rem;
+  --step-gap: var(--space-6);
+  display: grid;
+  gap: var(--step-gap);
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--step-size) 1fr;
+  align-content: start; /* gestreckte Schritte nicht auf die Zeilen verteilen */
+  gap: var(--space-4);
+}
+
+/* Linie zum nächsten Schritt */
+.step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: var(--step-size);
+  bottom: calc(-1 * var(--step-gap));
+  left: calc(var(--step-size) / 2 - 1px);
+  width: 2px;
+  background: var(--color-step-line);
+}
+
+.step__num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--step-size);
+  height: var(--step-size);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+}
+
+.step h3 {
+  margin-top: calc((var(--step-size) - 1.4em) / 2); /* Titel mittig zur Nummer */
+  margin-bottom: var(--space-1);
+  font-size: var(--fs-lg);
+}
+
+.step p { color: var(--color-text-muted); }
+
+@media (min-width: 60em) {
+  .steps {
+    --step-gap: var(--space-5);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .step { grid-template-columns: 1fr; }
+
+  .step:not(:last-child)::before {
+    top: calc(var(--step-size) / 2 - 1px);
+    bottom: auto;
+    left: calc(var(--step-size) + var(--space-3));
+    right: calc(-1 * var(--step-gap) + var(--space-3));
+    width: auto;
+    height: 2px;
+  }
+
+  .step h3 { margin-top: 0; }
+}
+
+/* CTA-Box (Ablauf, Karriere): drei feste Zustände für 2 Buttons
+   1. schmal:  Text, darunter die Buttons untereinander (volle Breite, nur auf kleinen Boxen)
+   2. mittel:  Text, darunter 2 gleich breite Buttons in einer Reihe
+   3. breit:   Text links, Buttons rechts in einer Zeile
+   Gesteuert per Container Query über die Breite der Box. */
+.cta-box {
+  container: cta-box / inline-size;
+  margin-top: var(--space-7);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+.cta-box__inner {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.cta-box__text {
+  color: var(--color-primary);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+}
+
+.cta-box__actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.cta-box__actions .btn {
+  width: 100%;
+  padding-inline: var(--space-4); /* kompakter, damit die Reihe früher passt */
+  white-space: nowrap;
+}
+
+@container cta-box (min-width: 26rem) {
+  .cta-box__actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@container cta-box (min-width: 48rem) {
+  .cta-box__inner {
+    grid-template-columns: auto auto;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cta-box__actions { grid-template-columns: repeat(2, auto); }
+}
+
+/* Variante auf dunklem Hintergrund (Karriere) */
+.cta-box--dark {
+  border-color: var(--color-accent-soft);
+  background: var(--color-primary-dark);
+}
+
+.cta-box--dark .cta-box__text { color: var(--color-on-primary); }
+
+.cta-box__sub {
+  margin-top: var(--space-2);
+  max-width: 34rem;
+  color: var(--color-on-primary-muted);
+}
+
+/* --- Karriere ------------------------------------------------------------ */
+
+.career {
+  display: grid;
+  gap: var(--space-6);
+}
+
+@media (min-width: 60em) {
+  .career {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+    gap: var(--space-7);
+  }
+}
+
+.career__jobs {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.job {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-on-primary);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-on-primary);
+}
+
+.job__title {
+  font-size: var(--fs-lg);
+  line-height: 1.3;
+}
+
+.job__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.job__meta li {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-accent);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.job > p { color: var(--color-on-primary-muted); }
+
+.job__details {
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--color-border-on-primary);
+}
+
+.job__details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--tap-min);
+  padding-top: var(--space-3);
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  list-style: none;
+}
+
+.job__details summary::-webkit-details-marker { display: none; }
+
+.job__details summary:focus-visible {
+  outline: none;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--focus-ring);
+}
+
+.job__chevron {
+  transform: rotate(90deg);
+  transition: transform var(--transition);
+}
+
+.job__details[open] .job__chevron { transform: rotate(-90deg); }
+
+.job__body { padding-top: var(--space-3); }
+
+.job__body h5 {
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+  color: var(--color-on-primary);
+  font-size: var(--fs-base);
+}
+
+.job__body h5:first-child { margin-top: 0; }
+
+.job__list,
+.perks {
+  display: grid;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.job__list li {
+  position: relative;
+  padding-left: var(--space-5);
+  color: var(--color-on-primary-muted);
+}
+
+.job__list li::before {
+  content: "";
+  position: absolute;
+  left: var(--space-1);
+  top: 0.65em;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+}
+
+.job__apply {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  margin-top: var(--space-4);
+  font-weight: var(--fw-semibold);
+}
+
+.career__perks h3 {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-xl);
+}
+
+.perks { gap: var(--space-3); }
+
+.perks li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.perks .icon {
+  margin-top: 0.15em;
+  color: var(--color-accent);
+}
+
+/* --- Kontakt ------------------------------------------------------------- */
+/* Zwei klar priorisierte Wege: links Anruf (mobil zuerst), rechts kurzes Formular */
+.contact {
+  display: grid;
+  gap: var(--space-7);
+}
+
+@media (min-width: 60em) {
+  .contact {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: start;
+  }
+}
+
+.contact__heading {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-xl);
+}
+
+.contact__call { width: 100%; }
+
+@media (min-width: 30em) {
+  .contact__call { width: auto; }
+}
+
+/* Live-Status „Jetzt erreichbar“ */
+.open-status {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-muted);
+}
+
+.open-status__dot {
+  flex-shrink: 0;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-text-muted);
+}
+
+.open-status.is-open { color: var(--color-success); }
+.open-status.is-open .open-status__dot {
+  background: var(--color-success);
+  box-shadow: 0 0 0 4px var(--color-success-tint);
+}
+
+.hours {
+  width: 100%;
+  max-width: 20rem;
+  margin-top: var(--space-5);
+  border-collapse: collapse;
+}
+
+.hours th,
+.hours td {
+  padding-block: var(--space-2);
+  text-align: left;
+  vertical-align: top;
+}
+
+.hours tr + tr :is(th, td) { border-top: 1px solid var(--color-border); }
+
+.hours th {
+  padding-right: var(--space-5);
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.contact__small {
+  margin-top: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.contact__alt {
+  margin-top: var(--space-5);
+}
+
+.contact__alt a {
+  display: inline-block; /* Adresse als Ganzes umbrechen, nicht am Bindestrich */
+  overflow-wrap: anywhere;
+}
+
+/* Notdienst: abgesetzt wie die Notdienst-Karte in den Leistungen */
+.contact__emergency {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: var(--color-on-primary-muted);
+}
+
+.contact__emergency > .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-accent);
+}
+
+.contact__emergency strong {
+  display: block;
+  color: var(--color-on-primary);
+}
+
+.contact__emergency-btn {
+  grid-column: 1 / -1; /* volle Breite unter Icon und Text, damit die Nummer nicht umbricht */
+  justify-self: start;
+  margin-top: var(--space-1);
+  white-space: nowrap;
+}
+
+@media (max-width: 29.99em) {
+  .contact__emergency-btn { justify-self: stretch; }
+}
+
+.contact__area {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.contact__area .icon {
+  margin-top: 0.15em;
+  color: var(--color-primary-light);
+}
+
+.contact__address {
+  display: block;
+  margin-top: var(--space-1);
+  overflow: hidden; /* schneidet die Trennpunkte am Zeilenanfang ab */
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+/* Jeder Teil hat seinen Trennpunkt VOR sich. Die Liste ist um genau diese Breite nach links
+   verschoben: Der Punkt des ersten Teils jeder Zeile liegt außerhalb und wird abgeschnitten. */
+.contact__address-list {
+  --sep: 0.75em; /* Abstand inkl. Punkt, entspricht etwa „ · “ */
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: calc(-1 * var(--sep));
+}
+
+.contact__address-list > span {
+  position: relative;
+  padding-left: var(--sep);
+  white-space: nowrap;
+}
+
+.contact__address-list > span::before {
+  content: "·";
+  content: "·" / ""; /* Screenreader lesen den Punkt nicht vor */
+  position: absolute;
+  left: calc(var(--sep) / 2 - 0.15em);
+}
+
+/* Formular-Karte */
+.contact-form,
+.form-success {
+  position: relative; /* Bezug für Honeypot und leeren Status */
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 40em) {
+  .contact-form,
+  .form-success { padding: var(--space-6); }
+}
+
+.contact-form[hidden],
+.form-success[hidden] { display: none; }
+
+.contact-form__title { font-size: var(--fs-xl); }
+
+.contact-form__hint {
+  margin-top: calc(-1 * var(--space-3));
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+/* Anliegen als Chips (Radio-Buttons, Pfeiltasten funktionieren nativ) */
+.chips {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.chips legend {
+  margin-bottom: var(--space-3);
+  padding: 0;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+/* Spaltenzahl nach der Breite der Formular-Karte (nicht des Bildschirms):
+   schmal 1 Spalte → ab 22rem 2 → ab 32rem 3. Alle Reihen gleich hoch. */
+.contact__form { container: contact-form / inline-size; }
+
+.chips__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 1fr;
+  gap: var(--space-2);
+}
+
+@container contact-form (min-width: 22rem) {
+  .chips__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@container contact-form (min-width: 32rem) {
+  .chips__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.chip {
+  position: relative;
+  cursor: pointer;
+}
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chip span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-input-bg);
+  color: var(--color-primary);
+  font-weight: var(--fw-semibold);
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.chip:hover span { border-color: var(--color-primary); }
+
+.chip input:checked + span {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.chip input:focus-visible + span { box-shadow: var(--focus-ring); }
+
+/* Felder */
+.field {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+}
+
+.field label {
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+.field__req { color: var(--color-error); }
+
+.field__opt,
+.field__hint {
+  font-weight: var(--fw-normal);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-input-bg);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.field input { height: var(--tap-min); }
+
+.field textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+.field :is(input, textarea)::placeholder { color: var(--color-text-muted); }
+
+.field :is(input, textarea):focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.field :is(input, textarea)[aria-invalid="true"] {
+  border-color: var(--color-error);
+  border-width: 2px;
+}
+
+.field__error {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-error);
+}
+
+.field__error::before { content: "⚠"; } /* Fehler nicht nur über Farbe erkennbar */
+
+/* Honeypot: aus dem sichtbaren Bereich, aber nicht display:none (manche Bots ignorieren das) */
+.contact-form__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contact-form__submit { justify-self: start; }
+
+@media (max-width: 29.99em) {
+  .contact-form__submit { justify-self: stretch; }
+}
+
+.contact-form__note {
+  margin-top: calc(-1 * var(--space-2));
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.contact-form.is-sending .contact-form__submit {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* Leer: visuell weg, bleibt aber als Live-Region im Accessibility-Tree */
+.form-status:empty {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.form-status {
+  padding: var(--space-4);
+  border-left: 4px solid currentColor;
+  border-radius: var(--radius-sm);
+  background: var(--color-error-tint);
+  color: var(--color-error);
+  font-weight: var(--fw-semibold);
+}
+
+.form-status:focus { outline: none; }
+.form-status:focus-visible { box-shadow: var(--focus-ring); }
+
+/* Bestätigung */
+.form-success {
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.form-success:focus { outline: none; }
+
+.form-success__icon {
+  width: 3rem;
+  height: 3rem;
+  padding: var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+.form-success__title { font-size: var(--fs-xl); }
+
+.form-success__demo {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-tint);
+  color: var(--color-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+/* Danke-Seite (Absenden ohne JS) */
+.thanks .form-success {
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+.thanks .btn { margin-top: var(--space-3); }
+
+/* --- Lightbox ------------------------------------------------------------ */
+.lightbox {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  padding: var(--space-8) var(--space-3) calc(var(--tap-min) + var(--space-5)); /* unten Platz für die Pfeile */
+  border: 0;
+  background: transparent;
+  color: var(--color-on-primary);
+}
+
+.lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+
+.lightbox::backdrop { background: var(--lightbox-backdrop); }
+
+/* Seite hinter der offenen Lightbox nicht scrollen */
+html:has(.lightbox[open]) { overflow: hidden; }
+
+.lightbox__figure {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  max-width: 100%;
+}
+
+.lightbox__img {
+  width: auto;
+  max-width: min(100%, 75rem);
+  max-height: calc(100svh - 9rem);
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  touch-action: pan-y pinch-zoom; /* horizontales Wischen übernimmt das JS */
+}
+
+.lightbox__caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1) var(--space-3);
+  text-align: center;
+  color: var(--color-on-primary-muted);
+}
+
+.lightbox__counter { color: var(--color-accent); font-weight: var(--fw-semibold); }
+
+.lightbox__btn {
+  position: fixed;
+  display: grid;
+  place-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--lightbox-btn-bg);
+  color: var(--color-on-primary);
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.lightbox__btn:hover { background: var(--lightbox-btn-bg-hover); }
+.lightbox__btn .icon { width: 1.5rem; height: 1.5rem; }
+
+.lightbox__close { top: var(--space-3); right: var(--space-3); }
+
+/* Handy: Pfeile unten, damit sie das Bild nicht verdecken */
+.lightbox__prev,
+.lightbox__next { bottom: var(--space-3); }
+.lightbox__prev { left: var(--space-3); }
+.lightbox__next { right: var(--space-3); }
+
+@media (min-width: 40em) {
+  .lightbox { padding: var(--space-6) var(--space-8); }
+
+  .lightbox__prev,
+  .lightbox__next {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+
+  .lightbox__prev { left: var(--space-4); }
+  .lightbox__next { right: var(--space-4); }
+}
+
+/* --- Footer ------------------------------------------------------------- */
+.site-footer {
+  padding-block: var(--space-7) var(--space-5);
+  background: var(--color-primary-dark);
+  color: var(--color-on-primary);
+  font-size: var(--fs-sm);
+}
+
+.site-footer a { color: var(--color-on-primary); }
+.site-footer a:hover { color: var(--color-accent); }
+
+.site-footer__grid {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.site-footer__col > * + * { margin-top: var(--space-3); }
+
+.brand--on-dark { color: var(--color-on-primary); }
+.brand--on-dark .brand__mark { background: var(--color-primary-light); }
+
+.site-footer__title {
+  margin-bottom: 0;
+  font-size: var(--fs-base);
+  color: var(--color-on-primary);
+}
+
+.site-footer__address { font-style: normal; }
+
+.site-footer__muted { color: var(--color-on-primary-muted); }
+
+.site-footer__list > li + li { margin-top: var(--space-1); }
+.site-footer__list > li { white-space: nowrap; }
+
+/* Links im Footer: ausreichend große Klickfläche */
+.site-footer__list a,
+.site-footer__legal a {
+  display: inline-block;
+  padding-block: var(--space-1);
+}
+
+.site-footer__emergency a {
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+}
+
+.site-footer__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border-on-primary);
+  color: var(--color-on-primary-muted);
+}
+
+.site-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+.site-footer__note { font-style: italic; }
+
+@media (min-width: 48em) {
+  .site-footer__grid { grid-template-columns: 1.4fr 1fr 1fr; }
+
+  .site-footer__bottom {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--space-6);
+  }
+
+  .site-footer__note { margin-left: auto; }
+}
+
+/* --- Unterseiten (Impressum, Datenschutz) -------------------------------- */
+.page-header {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.page-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--header-height);
+  white-space: nowrap;
+  padding-block: var(--space-2);
+}
+
+.legal {
+  max-width: 46rem;
+}
+
+.legal h1 { font-size: var(--fs-2xl); margin-bottom: var(--space-5); }
+.legal h2 { font-size: var(--fs-xl); margin: var(--space-6) 0 var(--space-3); }
+
+.legal ul {
+  padding-left: var(--space-5);
+  list-style: disc;
+}
+
+.legal li + li { margin-top: var(--space-1); }
+
+.legal-notice {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-tint);
+}
+
+/* Sichtbare Platzhalter für fehlende Angaben */
+.placeholder {
+  padding-inline: var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-tint);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+/* Unterseiten haben keine Anruf-Leiste */
+body.page-legal { padding-bottom: 0; }
+
+/* --- Anruf-Leiste (nur mobil) -------------------------------------------- */
+.call-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-bottom: env(safe-area-inset-bottom); /* iPhone-Home-Indikator */
+  background: var(--color-primary);
+  box-shadow: var(--shadow-call-bar);
+}
+
+.call-bar__item {
+  display: flex;
+  flex-wrap: wrap; /* bei großem Text/Textabstand umbrechen statt überlaufen */
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 0;
+  text-align: center;
+  min-height: var(--call-bar-height);
+  color: var(--color-on-primary);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+}
+
+.call-bar__item:hover { color: var(--color-on-primary); }
+
+.call-bar__item--call {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.call-bar__item--call:hover { color: var(--color-on-accent); }
+
+/* Platz schaffen, damit die Leiste den Footer nicht verdeckt */
+body {
+  padding-bottom: calc(var(--call-bar-height) + env(safe-area-inset-bottom));
+}
+
+/* Mit JS: erst nach dem Hero einblenden */
+.js .call-bar {
+  transform: translateY(100%);
+  visibility: hidden;
+  transition: transform var(--transition), visibility 0s linear 180ms;
+}
+
+.js .call-bar.is-visible {
+  transform: translateY(0);
+  visibility: visible;
+  transition: transform var(--transition), visibility 0s;
+}
+
+@media (min-width: 60em) {
+  .call-bar { display: none; }
+  body { padding-bottom: 0; }
+}
