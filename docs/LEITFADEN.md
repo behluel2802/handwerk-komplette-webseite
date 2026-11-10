@@ -228,7 +228,7 @@ Jeweils **Symptom → Ursache → Lösung**.
 - [ ] Node in der Version aus `.nvmrc`, `npm ci && npm run build`, `npm start` als Dienst (systemd, supervisord o. Ä.).
 - [ ] `backend/.env` auf dem Server anlegen (SMTP-Zugang, `MAIL_TO`, ggf. `TRUST_PROXY=1`), nie ins Repo.
 - [ ] Testanfrage über das Formular, Mail kommt an, Antworten an den Kunden funktionieren (`Reply-To`).
-- [ ] HTTPS, danach HSTS.
+- [ ] HTTPS ist Pflicht (Formulare übertragen personenbezogene Daten, DSGVO Art. 32; Browser warnen sonst „Nicht sicher“): Let's-Encrypt-Zertifikat mit automatischer Verlängerung, TLS 1.2/1.3, HTTP per 301 auf HTTPS. Node lauscht nur auf `localhost` hinter einem Reverse Proxy (Caddy/nginx bzw. beim Hoster), der TLS übernimmt, dazu `TRUST_PROXY=1`. HSTS erst, wenn HTTPS stabil läuft.
 - [ ] Prüfen, dass `/.env`, `/backend/`, `/docs/`, `/site.json`, `/.git/` mit 404 antworten.
 
 **Domainabhängiges**
@@ -237,6 +237,12 @@ Jeweils **Symptom → Ursache → Lösung**.
 - [ ] JSON-LD: `image`/`logo` als absolute URL, ggf. `sameAs` (Google-Profil, Social Media).
 - [ ] `robots.txt` und `sitemap.xml` (nur Startseite; Rechtsseiten bleiben `noindex`).
 - [ ] Optional JSON-LD `JobPosting` je Stelle – nur mit echten Daten (Ort, Datum, Anstellungsart).
+
+**Öffentliche Demo mit fiktivem Betrieb** (z. B. GitHub Pages als Portfolio)
+- [ ] Impressum nennt den **echten Betreiber** (Name, ladungsfähige Anschrift, E-Mail) und erklärt, dass der Betrieb fiktiv ist – ein fiktives Impressum erfüllt § 5 DDG nicht. Betreiberdaten nicht ins Repo (Git-Historie), sondern per Umgebungsvariable in den Build.
+- [ ] Datenschutzerklärung für den Demo-Host (Logs, ggf. USA-Übermittlung).
+- [ ] Formulare senden in der Demo **gar nichts** (auch nicht an den Host, der mit 404/405 antwortet), Anruf-Links wählen keine fiktiven Nummern.
+- [ ] Sichtbarer Hinweis „Demo / fiktiver Betrieb“ auf allen Seiten, `noindex`.
 
 **Extern**
 - [ ] Google-Unternehmensprofil anlegen/prüfen: NAP **exakt** wie in `site.json`; Link in `rating.profileUrl`.

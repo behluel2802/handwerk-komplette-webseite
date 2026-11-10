@@ -1,14 +1,15 @@
-# Projekt-Briefing: Handwerk Nr. 1 – Website-Vorlage für einen Elektrobetrieb
+# Projekt-Briefing: Handwerk komplett – mehrseitige Website-Vorlage für einen Elektrobetrieb
 
-Stand: 06.11.2026
+Stand: 08.11.2026
 
 ## 1. Ausgangslage
 
-- **Art des Projekts:** Übungsprojekt bzw. wiederverwendbare Vorlage, kein echter Kunde.
+- **Art des Projekts:** Übungsprojekt bzw. wiederverwendbare Vorlage, kein echter Kunde. **Phase 2:** Lern- und Vorzeigeprojekt für mehrseitige Websites.
+- **Herkunft:** Phase 1 (One-Pager, Schritte 1–15a) entstand im Repo `git@github.com:behluel2802/handwerk-nr-eins.git` und wurde als Vorlage für dieses Repo übernommen. Phase 2 baut den One-Pager zur vollständigen mehrseitigen Website aus.
 - **Beispiel-Gewerk:** Elektriker
-- **Betrieb:** fiktiv, **Elektro Berger GmbH**, siehe Firmendaten unten. Alle Angaben sind ausgedacht und klar als Platzhalter erkennbar.
+- **Betrieb:** fiktiv, **Elektro Berger GmbH**, siehe Firmendaten unten. Alle Angaben sind ausgedacht und klar als Platzhalter erkennbar. Inhalte der Unterseiten (Leistungstexte, FAQ, Projekte, Stellen) dürfen als realistische Platzhalter erfunden werden, Stammdaten weiterhin nicht.
 - **Erfahrung des Entwicklers:** erfahren, technische Erklärungen dürfen knapp sein.
-- **Repository:** `git@github.com:behluel2802/handwerk-nr-eins.git` (Branch `main`)
+- **Repository:** `git@github.com:behluel2802/handwerk-komplette-webseite.git` (Branch `main`)
 
 ### Firmendaten (fiktiv)
 
@@ -27,7 +28,8 @@ Nicht in `site.json` (Inhalt, nicht Stammdaten):
 2. **Seriös auftreten:** digitale Visitenkarte, Vertrauen aufbauen
 3. **Referenzen zeigen:** Projektgalerie und Kundenstimmen
 
-4. **Mitarbeiter finden (Nebenziel):** Kompakter Karriere-Block statt eigener Karriereseite. Hintergrund: Wegen des Fachkräftemangels sind viele Betriebe ausgelastet, und die Personalsuche ist oft der größere Engpass als die Kundengewinnung.
+4. **Mitarbeiter finden (Nebenziel):** Hintergrund: Wegen des Fachkräftemangels sind viele Betriebe ausgelastet, und die Personalsuche ist oft der größere Engpass als die Kundengewinnung. Phase 1: kompakter Karriere-Block; Phase 2: eigene Karriereseite mit einer Seite je Stelle (Google for Jobs).
+5. **Lernziel (Phase 2):** sauberes Vorzeigeprojekt für mehrseitige Websites: Content als Daten, Templates je Seitentyp, Navigation, technisches SEO, Qualitätsprüfung aller Seiten.
 
 ## 3. Zielgruppe
 
@@ -45,7 +47,33 @@ Vorgabe: der Stil, der die Zielgruppe am besten anspricht. Daraus abgeleitet:
 - **Vertrauenssignale weit oben:** Meisterbetrieb, Innung, Jahre Erfahrung, Einzugsgebiet, Notdienst
 - Farben und Schriften als **CSS-Variablen (Design-Tokens)**, damit sich die Vorlage schnell auf andere Gewerke umstellen lässt
 
-## 5. Aufbau (One-Pager)
+## 5. Aufbau
+
+### 5.1 Sitemap (Phase 2, mehrseitig)
+
+Ordner-URLs mit Schrägstrich am Ende (`/leistungen/wallbox/` → `leistungen/wallbox/index.html`), keine `.html` in Links.
+
+| URL | Seite | Inhalt (Kurz) |
+|---|---|---|
+| `/` | Startseite | Teaser-Version des One-Pagers: Hero, Vertrauensleiste, Ablauf und Kontakt (mit Formular) voll; Leistungen, Referenzen, Über uns, Karriere als Teaser mit „Mehr erfahren“ |
+| `/leistungen/` | Leistungen (Übersicht) | 6 Karten, verlinkt auf die Detailseiten |
+| `/leistungen/<leistung>/` | 5 Detailseiten | Elektroinstallation, Altbausanierung, Smart Home, PV & Wallbox, E-Check. Je ca. 400–700 Wörter: Einleitung, Leistungsumfang, Ablauf, 3–5 FAQ, passende Referenzen, CTA-Box |
+| `/notdienst/` | Notdienst | 6. Leistung, eigene kurze URL (wichtigster Suchanlass), Notdienst-Nummer prominent |
+| `/referenzen/` | Referenzen | Galerie mit Lightbox, Kundenstimmen, Google-Link; optional 3–6 Projektseiten `/referenzen/<projekt>/` (Entscheidung im Inhalts-Schritt) |
+| `/ueber-uns/` | Über uns | Geschichte als Zeitleiste, Werte, Ausbildungsbetrieb, Arbeitsfotos, Innung/Handwerksrolle. Kein Team-Raster mit erfundenen Personen |
+| `/karriere/` | Karriere | Übersicht: Vorteile, offene Stellen, Bewerbung ohne Anschreiben |
+| `/karriere/<stelle>/` | 2 Stellenseiten | Elektroniker/in EGT, Ausbildung; je mit JSON-LD `JobPosting` und Kurzformular „Rückruf für Bewerber“ (Name, Telefon, kein Upload) |
+| `/kontakt/` | Kontakt | Anruf + Live-Status, Formular (Anliegen vorbelegbar per `?anliegen=…`), Einzugsgebiet |
+| `/impressum/`, `/datenschutz/`, `/danke/` | Rechtliches, Danke | wie bisher, aber mit vollem Layout (Header, Navigation) |
+| `404.html` | Fehlerseite | mit Navigation und Links zu Start, Leistungen, Kontakt |
+
+**Bewusst nicht:** Ortsseiten je Nachbarort (Doorway-Pages), Blog/Ratgeber (ohne CMS keine Pflege), eigene FAQ-Seite (FAQ stehen auf den Leistungsseiten).
+
+**Navigation:** Header auf allen Seiten gleich (Layout-Partial), „Leistungen“ mit einfachem Aufklappmenü (tastaturbedienbar, kein Mega-Menü), Breadcrumbs auf allen Unterseiten, Footer mit vollständiger Sitemap, mobile Anruf-Leiste auf allen Seiten außer Rechtsseiten.
+**Kontaktwege:** CTA-Box auf jeder Seite; Formular nur auf Startseite und Kontaktseite (dort Anliegen vorbelegt, wenn von einer Leistungsseite verlinkt).
+**Inhalte:** keine Preise, nur Hinweis auf das Festpreis-Angebot. Ein Foto je Leistung (ca. 15–25 Unsplash-Fotos gesamt), Wiederverwendung nur bei Referenzen.
+
+### 5.2 Phase 1 (One-Pager, Historie)
 
 1. **Hero:** Kernaussage, Einzugsgebiet, Buttons „Jetzt anrufen“ und „Anfrage senden“
 2. **Vertrauensleiste:** Meisterbetrieb, Innungsmitglied, Bewertungen, Notdienst
@@ -73,6 +101,74 @@ Querschnittsthema: **Google-Bewertungen bzw. Google-Unternehmensprofil** gut sic
 
 Arbeitsweise: Vor jedem Schritt stellt Claude den Plan vor (mit nummerierten Entscheidungspunkten), der Entwickler gibt Feedback, erst dann wird umgesetzt. Nach jedem Schritt Screenshot-Prüfung (Desktop/Tablet/Handy), Commit nur auf Anweisung.
 
+### Phase 2: Ausbau zur mehrseitigen Website (aktuell)
+
+| # | Schritt | Status |
+|---|---|---|
+| P1 | Briefing und `CLAUDE.md` auf mehrseitig umstellen (Sitemap, Grundsatzentscheidungen), HTTPS-Punkt im Leitfaden (der Leitfaden selbst wird in P7 auf mehrseitig erweitert) | ✅ erledigt (08.11.2026), nicht committet |
+| P2 | Architektur: Layout-Partial (Header, Navigation, Anruf-Leiste, Footer) für alle Seiten, konfigurierbarer Basispfad, Content-Dateien (JSON/Front-Matter + Markdown) mit Schema-Prüfung, Seitengenerierung je Seitentyp per Vite-Plugin, Ordner-URLs, 404-Seite, CSS in Komponenten-Dateien, JS-Module (Lightbox nur wo nötig), Backend + Tests anpassen, ESLint/Prettier; Demo-Schalter `DEMO` und Betreiberdaten aus Umgebungsvariablen (R1, R6, R7, R8, R11) | **nächster Schritt**: Plan vorstellen |
+| P3 | Navigation: Aufklappmenü „Leistungen“, Breadcrumbs, aktiver Zustand, Footer-Sitemap; Demo-Hinweisleiste (R5) | offen |
+| P4 | Templates je Seitentyp (Leistung, Stelle, Übersicht, Projekt) mit je einer Beispielseite; Unterseiten-Hero, FAQ-Akkordeon, „Weitere Leistungen“, CTA-Box | offen |
+| P5 | Inhalte und Fotos aller Seiten (Texte, FAQ, Stellen, Referenzen, Startseite auf Teaser umbauen), Bewerber-Rückruf-Endpunkt; Demo-Impressum, Demo-Datenschutzerklärung, Bildnachweise (R2, R10, R12) | offen |
+| P6 | Technisches SEO: `sitemap.xml`, `robots.txt`, `canonical`, `og:*`, JSON-LD (`BreadcrumbList`, `Service`, `JobPosting`) – alles aus `site.url` erzeugt | offen |
+| P7 | Qualität: Build-Tests (Links/Anker, Sitemap vollständig, Titel/Beschreibung/canonical/eine h1 je Seite), Lighthouse/axe für alle Seiten (URL-Liste automatisch), GitHub-Pages-Demo fürs neue Repo (erst online, wenn Impressum und Datenschutz final sind), Leitfaden ergänzen inkl. Rechts-Checkliste für echte Betriebe (R14) | offen |
+| 14 | Deployment (aus Phase 1, weiter zurückgestellt), inkl. HTTPS | zurückgestellt |
+
+#### Grundsatzentscheidungen Phase 2 (freigegeben am 08.11.2026)
+
+**Rahmen**
+1. Betrieb bleibt fiktiv (Elektro Berger GmbH); Inhalte der Unterseiten als realistische Platzhalter.
+2. Zweck des Ausbaus: Lernzweck und Vorzeigeprojekt für mehrseitige Projekte.
+3. Bestehendes Briefing wird fortgeschrieben, Phase 1 bleibt als Historie.
+
+**Struktur:** Sitemap wie in Abschnitt 5.1; Teaser-Startseite; Ordner-URLs; einfaches Aufklappmenü, Breadcrumbs, Footer-Sitemap; CTA-Box überall, Formular auf Start- und Kontaktseite mit Vorbelegung des Anliegens (revidiert Entscheidung 4 aus Schritt 11).
+
+**Inhalt:** Leistungsseiten SEO-tauglich (ca. 400–700 Wörter, FAQ); keine Preise; kein Team-Raster mit erfundenen Personen; Karriere mit Seite je Stelle, `JobPosting` und Kurzformular „Rückruf für Bewerber“ ohne Upload (revidiert „Karriere ohne eigene Seite“); ca. 15–25 Unsplash-Fotos, eins je Leistung.
+
+**Technik**
+1. Stack bleibt: HTML/CSS/Vanilla JS, Vite, Handlebars, `node:http` + nodemailer. Kein Framework, keine Datenbank, kein CMS, kein Docker, kein CSS-Präprozessor, kein Tailwind. Begründung: statische Broschüren-Site ohne zu speichernde Daten; ein Full-Stack-Aufbau brächte Updates und Angriffsfläche ohne Nutzen. Eine Redaktionsoberfläche (Git-basiertes CMS auf den Content-Dateien) wäre höchstens ein späterer optionaler Schritt.
+2. Gleichartige Seiten aus Daten: Content in `frontend/content/` (JSON bzw. Front-Matter + Markdown für Fließtext), Template je Seitentyp, eigenes kleines Vite-Plugin erzeugt die Seiten. Bild-Pipeline, CSP-Hashes und Komprimierung bleiben. Verworfen: jede Seite von Hand (Duplikate), Eleventy (Pipeline/CSP/Build müssten umgebaut werden).
+3. Ein Layout-Partial für alle Seiten (auch Rechtsseiten mit voller Navigation).
+4. Konfigurierbarer Basispfad statt `base: './'` + `home`-Präfix (Unterordner und GitHub-Pages-Unterpfad).
+5. CSS in Komponenten-Dateien, ausgeliefert weiter als ein Bundle; `main.js` in Module, Lightbox nur auf Seiten mit Galerie.
+6. Technisches SEO jetzt schon, aus `site.url` erzeugt (Go-Live = ein Wert).
+7. Lighthouse/axe für alle Seiten, URL-Liste automatisch. GitHub-Pages-Demo fürs neue Repo (`noindex`), Adresse dann `https://behluel2802.github.io/handwerk-komplette-webseite/`.
+8. Design (Tokens, Farben, Stil) bleibt; neue Komponenten: Unterseiten-Hero mit Breadcrumb, Aufklappmenü, FAQ-Akkordeon (`<details>`), „Weitere Leistungen“, CTA-Box/Seitenleiste.
+
+**Ergänzungen zum Stack (T1–T5, freigegeben)**
+- T1: Markdown für Fließtext (`markdown-it` + `gray-matter`, devDependencies)
+- T2: Schema-Prüfung der Content-Dateien im Build (Abbruch bei fehlenden/falschen Feldern); Typprüfung per JSDoc + `tsc --checkJs`
+- T3: Build-Tests für alle Seiten: keine toten internen Links/Anker, jede indexierbare Seite in `sitemap.xml`, Titel, Beschreibung, `canonical` und genau eine h1 je Seite
+- T4: Backend bleibt `node:http` + nodemailer; neu: Bewerber-Rückruf-Endpunkt, echte 404-Seite
+- T5: ESLint + Prettier
+
+#### Öffentliche Demo rechtssicher (freigegeben am 08.11.2026)
+
+Anlass: Ein Impressum mit fiktiven Daten erfüllt § 5 DDG nicht; verantwortlich ist der tatsächliche Betreiber (der Entwickler). Außerdem schickte der Demo-Modus die Formulardaten an den Host (Bestätigung erst nach der 405-Antwort).
+
+- **R1** Betreiberdaten (Name, ladungsfähige Anschrift, E-Mail, optional Telefon, Bundesland für die Aufsichtsbehörde) **nie ins Repo**: im Demo-Build aus Umgebungsvariablen (GitHub-Actions-Variablen bzw. lokal eine Datei, die auf `.gitignore` steht). Fehlen sie, bricht der Demo-Build ab.
+- **R2** Demo-Impressum: Betreiber + Satz „Elektro Berger GmbH ist ein fiktiver Betrieb. Alle Firmendaten, Kundenstimmen und Bewertungen sind erfunden. Diese Website ist ein Übungs- und Demonstrationsprojekt.“ Ohne Register/USt-IdNr./Kammer.
+- **R3** Anschriften-Service (c/o) optional, Entscheidung beim Entwickler (offen). Postfach reicht nicht.
+- **R4** eigene Alias-Adresse für das Impressum.
+- **R5** statische Hinweisleiste oben auf allen Seiten (nicht wegklickbar, kein Speicher, kein `role="alert"`): „Demo-Projekt: Elektro Berger ist ein fiktiver Betrieb. Anfragen werden nicht versendet. Betreiber und Impressum“. Revidiert Entscheidung 3 aus Schritt 12b.
+- **R6** Build-Schalter `DEMO`: Formulare senden **keinen** Request, Demo-Bestätigung direkt; ohne JS Hinweis statt Absende-Button.
+- **R7** Anruf-Buttons bleiben sichtbar, wählen in der Demo aber nicht (Hinweis „Demo: fiktive Nummer“). `mailto:` an `.example` bleibt.
+- **R8** `noindex` bleibt in der Demo, künftig über den `DEMO`-Schalter gesetzt (statt `sed` im Workflow, der nur oberste HTML-Dateien erfasst). Firmenname bleibt.
+- **R9** keine Einzelkennzeichnung der Kundenstimmen (Entscheidung 5 aus Schritt 7 bleibt).
+- **R10** Demo-Datenschutzerklärung ausformuliert: Verantwortlicher, Hosting GitHub Pages (Logs/IP, Art. 6 Abs. 1 lit. f, USA, EU-US Data Privacy Framework), keine Cookies/Tracker/externen Inhalte, Formulare übertragen nichts, E-Mail-Kontakt, Rechte, Beschwerderecht, Stand. Entwickler gleicht mit einem Generator ab.
+- **R11** zwei Fassungen der Rechtsseiten: Platzhalter-Gliederung (Vorlage für echte Betriebe) und Demo-Texte, gesteuert über `DEMO`.
+- **R12** Bildnachweise im Impressum, erzeugt aus `CREDITS.md`.
+- **R13** alte Demo (`handwerk-nr-eins`) deaktivieren, bis sie ein gültiges Impressum hat. ✅ Am 08.11.2026 erledigt: GitHub Pages und der Pages-Workflow sind in beiden Repos deaktiviert; in P7 hier wieder aktivieren.
+- **R14** Rechts-Checkliste für echte Betriebe in den Leitfaden (UWG: echte Bewertungen, Stockfotos nicht als eigene Referenzen; AV-Verträge, Löschkonzept, VSBG, BFSG).
+
+Keine Rechtsberatung; Ziel ist eine klar gekennzeichnete, nicht kommerzielle Demo mit minimalem Risiko.
+
+**Hosting-Hinweis:** Beim echten Onlinestellen (Schritt 14) ist HTTPS Pflicht (Formulare mit Personendaten, DSGVO Art. 32): Let's Encrypt, HTTP → 301 → HTTPS, Node nur auf `localhost` hinter Reverse Proxy (`TRUST_PROXY=1`), HSTS danach.
+
+### Phase 1: One-Pager (abgeschlossen)
+
+Die Pages-Adresse in Schritt 12b bezieht sich auf das alte Repo `handwerk-nr-eins`.
+
 | # | Schritt | Status |
 |---|---|---|
 | 1 | Fiktiven Betrieb festlegen | ✅ erledigt |
@@ -91,7 +187,7 @@ Arbeitsweise: Vor jedem Schritt stellt Claude den Plan vor (mit nummerierten Ent
 | 12b | Demo über GitHub Pages: Actions-Workflow nur für `frontend/`, `noindex`, Pages in den Repo-Einstellungen aktivieren | ✅ erledigt, gepusht, Demo online geprüft |
 | 13a | Build-Schritt mit Vite: Bausteine (Partials) für Kopf/Footer, Ausgabe nach `dist/`, Backend und Pages-Workflow anpassen, CSP-Hash aus dem Build | ✅ erledigt, gepusht |
 | 13b | Feinschliff (unabhängig vom Hosting): Barrierefreiheit, Lighthouse/Performance, Favicon und App-Icons, On-Page-SEO (Überschriften, Meta-Beschreibung, Alt-Texte, JSON-LD prüfen) | ✅ erledigt, gepusht |
-| 14 | Deployment (nur falls die Seite echt öffentlich gehen soll): Anbieter mit Rechenzentrum in DE (Favorit Uberspace, Alternative eigener VPS), Domain, SMTP, Ablauf – dazu alles Domain-Abhängige: `og:url`, `canonical`, absolute `og:image`, `sitemap.xml`/`robots.txt`, JSON-LD `JobPosting` (echte Daten), Link zum Google-Profil, Impressum/Datenschutz ausfüllen, HSTS, Lighthouse auf dem echten Server | zurückgestellt, Übungsprojekt wird vorerst nicht gehostet |
+| 14 | Deployment (nur falls die Seite echt öffentlich gehen soll): Anbieter mit Rechenzentrum in DE (Favorit Uberspace, Alternative eigener VPS), Domain, SMTP, Ablauf – dazu alles Domain-Abhängige: `og:url`, `canonical`, absolute `og:image`, `sitemap.xml`/`robots.txt`, JSON-LD `JobPosting` (echte Daten), Link zum Google-Profil, Impressum/Datenschutz ausfüllen, HTTPS (Pflicht, Let's Encrypt, 301 von HTTP) und danach HSTS, Lighthouse auf dem echten Server | zurückgestellt, Übungsprojekt wird vorerst nicht gehostet |
 | 15a | Firmendaten an einer Stelle: `frontend/site.json` als Handlebars-Kontext `site`, JSON-LD daraus erzeugt, Pflichtfeld-Prüfung im Build | ✅ erledigt, gepusht |
 | 15 | Leitfaden „Vorlage für neue Projekte“ (`docs/LEITFADEN.md`, eigenständig) und leere Briefing-Vorlage | ✅ erledigt, gepusht. Damit sind alle geplanten Schritte abgeschlossen; offen ist nur Schritt 14 (zurückgestellt) |
 
@@ -365,12 +461,12 @@ Umgesetzt: Leitfaden mit 9 Abschnitten (zusätzlich „Aufbau im Überblick“),
 |---|---|
 | Zweck | Übung / Vorlage |
 | Ziele | Anfragen, Seriosität, Referenzen, dazu Mitarbeitersuche als Nebenziel |
-| Karriere | kompakter Abschnitt im One-Pager, keine eigene Seite |
+| Karriere | Phase 1: kompakter Abschnitt; Phase 2: Karriereseite + Seite je Stelle mit `JobPosting` |
 | Gewerk | Elektriker |
 | Betrieb | fiktiv |
-| Struktur | One-Pager |
+| Struktur | Phase 1: One-Pager; Phase 2: mehrseitig (Sitemap Abschnitt 5.1), Ordner-URLs |
 | Stil | auf die Zielgruppe ausgerichtet (Blau + Gelb/Bernstein, hell, vertrauenswürdig) |
-| Technik | einfaches HTML/CSS/JS |
+| Technik | einfaches HTML/CSS/JS; Phase 2: Stack bleibt, Seiten aus Content-Dateien (JSON/Markdown) per Vite-Plugin, kein Full-Stack (08.11.2026) |
 | Formular | eigenes Node.js-Backend (`/api/kontakt`), ohne Backend Demo-Modus |
 | Ordner | `frontend/` (Quellen; öffentlich nur `frontend/dist/`) und `backend/` getrennt, npm-Workspaces |
 | Build-Schritt | Vite (Schritt 13a). Begründung: Projekt dient als Vorlage und Lernbasis für größere Projekte; Kopf/Footer sind bereits mehrfach dupliziert; Lighthouse soll das gebaute Ergebnis messen. Entscheidung vom 08.11.2026 |
@@ -381,5 +477,9 @@ Umgesetzt: Leitfaden mit 9 Abschnitten (zusätzlich „Aufbau im Überblick“),
 
 ## 9. Offene Punkte
 
+- Phase 2: nächster Schritt P2 (Architektur), Plan vorstellen
+- R3: Anschriften-Service ja/nein (Entwickler); R13 erledigt (Pages + Workflow in beiden Repos aus); dieselben Demo-Punkte werden auch im Template-Repo `handwerk-nr-eins` umgesetzt
+- Referenzen: ob Projektseiten `/referenzen/<projekt>/` kommen, wird in P5 entschieden
+- Einzugsgebiet: Abschnitt auf Kontakt- oder Über-uns-Seite (keine Ortsseiten), Platzierung in P5
 - Schritt 14 (Deployment) zurückgestellt, Checkliste in `docs/LEITFADEN.md` Abschnitt 8
 - Commit und Push nur auf ausdrückliche Anweisung
