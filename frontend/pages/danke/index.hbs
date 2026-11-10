@@ -1,0 +1,20 @@
+---
+title: Vielen Dank
+description: "Bestätigung: Ihre Anfrage ist angekommen. Wir melden uns schnellstmöglich bei Ihnen zurück."
+robots: noindex
+---
+{{!-- Bestätigung nach dem Absenden ohne JavaScript (Weiterleitung vom Backend) --}}
+<div class="section thanks">
+  <div class="container">
+    <div class="form-success">
+      <h1 class="form-success__title">Vielen Dank!</h1>
+      {{#if demo}}
+      <p>Demo-Version: Es wurde keine Anfrage verschickt.</p>
+      {{else}}
+      <p>Ihre Anfrage ist bei uns angekommen. Wir melden uns {{site.responseTime}}.</p>
+      <p class="contact__small">Eilig? Rufen Sie uns an: <a href="{{tel site.phone}}">{{site.phone.display}}</a></p>
+      {{/if}}
+      <a class="btn btn--primary" href="{{url "/"}}">Zurück zur Startseite</a>
+    </div>
+  </div>
+</div>

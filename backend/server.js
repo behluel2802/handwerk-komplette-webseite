@@ -53,9 +53,10 @@ async function pickEncoding(file, acceptEncoding = '') {
   return null;
 }
 
-// HTML-Seiten im Wurzelordner der Website
+// Alle HTML-Seiten der Website (auch in Unterordnern: leistungen/smart-home/index.html)
 async function htmlPages(root) {
-  return (await readdir(root).catch(() => [])).filter((f) => f.endsWith('.html')).sort();
+  const files = await readdir(root, { recursive: true }).catch(() => []);
+  return files.filter((f) => f.endsWith('.html')).sort();
 }
 
 // Hashes aller Inline-Skripte aller Seiten für die CSP (JSON-LD wird nicht ausgeführt, braucht keinen)
@@ -95,22 +96,14 @@ const json = (res, status, body, extra = {}) => {
   res.end(JSON.stringify(body));
 };
 
-const notFound = (res) => {
-  res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-  res.end('Nicht gefunden');
-};
-
 const escapeHtml = (s) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-// Fehlerseite für Absenden ohne JS (mit JS zeigt das Frontend die Meldung selbst an)
-const htmlError = (res, status, message) => {
-  res.writeHead(status, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
-  res.end(`<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex"><title>Anfrage nicht gesendet</title><link rel="stylesheet" href="/css/tokens.css"><link rel="stylesheet" href="/css/base.css">
-<main class="section"><div class="container stack"><h1>Anfrage nicht gesendet</h1><p>${escapeHtml(message)}</p>
-<p><a href="/#kontakt">Zurück zum Formular</a> oder rufen Sie uns an: <a href="tel:${escapeHtml(site.phone.tel)}">${escapeHtml(site.phone.display)}</a></p></div></main></html>`);
-};
+// Gebaute Seiten, die das Backend selbst ausliefert (pages/404.hbs, pages/anfrage-fehler/index.hbs)
+const PAGE_404 = '404.html';
+const PAGE_ERROR = 'anfrage-fehler/index.html';
+// Im Text der Fehlerseite ersetzt das Backend den Abschnitt zwischen diesen Markierungen durch die Meldung
+const ERROR_MARK = /<!--fehler-->[\s\S]*?<!--\/fehler-->/;
 
 /** Liest den Request-Body mit Größenlimit (zu große Bodies werden verworfen, nicht gepuffert) */
 function readBody(req) {
@@ -170,7 +163,35 @@ export async function createApp({
     return cached.headers;
   }
 
-  // Liefert eine Datei aus der Website-Wurzel – oder null, wenn sie nicht ausgeliefert werden darf
+  const sendHtml = (res, status, html) => {
+    res.writeHead(status, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(html);
+  };
+  const builtPage = (file) => readFile(path.join(rootReal, file), 'utf8').catch(() => null);
+
+  // Unbekannte Adresse: gebaute 404-Seite (mit Navigation), sonst schlichter Text
+  async function notFound(res) {
+    const html = await builtPage(PAGE_404);
+    if (html) return sendHtml(res, 404, html);
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Nicht gefunden');
+  }
+
+  // Fehlerseite für Absenden ohne JS (mit JS zeigt das Frontend die Meldung selbst an)
+  async function htmlError(res, status, message) {
+    const html = await builtPage(PAGE_ERROR);
+    if (html) return sendHtml(res, status, html.replace(ERROR_MARK, escapeHtml(message)));
+    const tel = escapeHtml(site.phone.tel);
+    sendHtml(
+      res,
+      status,
+      `<!doctype html><html lang="de"><meta charset="utf-8"><meta name="robots" content="noindex"><title>Anfrage nicht gesendet</title>` +
+        `<h1>Anfrage nicht gesendet</h1><p>${escapeHtml(message)}</p><p><a href="tel:${tel}">${escapeHtml(site.phone.display)}</a></p></html>`,
+    );
+  }
+
+  // Liefert eine Datei aus der Website-Wurzel – oder null, wenn sie nicht ausgeliefert werden darf.
+  // Ordner ohne Schrägstrich am Ende (/impressum) → { redirect: '/impressum/' }
   async function resolveFile(urlPath) {
     let pathname;
     try {
@@ -186,6 +207,15 @@ export async function createApp({
     if (segments.some((s) => s.startsWith('.'))) return null;
 
     const file = path.join(rootReal, ...segments);
+    if (!path.extname(file)) {
+      try {
+        const real = await realpath(path.join(file, 'index.html'));
+        if (real.startsWith(rootReal + path.sep) && (await stat(real)).isFile()) return { redirect: true };
+      } catch {
+        // kein Ordner mit index.html → 404
+      }
+      return null;
+    }
     if (!MIME[path.extname(file).toLowerCase()]) return null;
 
     try {
@@ -206,6 +236,11 @@ export async function createApp({
     }
     const found = await resolveFile(url.pathname);
     if (!found) return notFound(res);
+    if (found.redirect) {
+      res.writeHead(301, { Location: `${url.pathname}/${url.search}` });
+      res.end();
+      return;
+    }
 
     // Vorkomprimierte Variante (.br/.gz aus dem Build), falls der Browser sie annimmt
     const encoding = await pickEncoding(found.file, req.headers['accept-encoding']);
@@ -269,7 +304,7 @@ export async function createApp({
 
     const done = () => {
       if (isForm) {
-        res.writeHead(303, { Location: '/danke.html' });
+        res.writeHead(303, { Location: '/danke/' });
         res.end();
       } else {
         json(res, 200, { ok: true });

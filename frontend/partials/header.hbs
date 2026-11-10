@@ -1,0 +1,42 @@
+{{!-- Header aller Seiten. Kein id="top" am Header: #top ohne Ziel-Element springt laut HTML-Spec an den Seitenanfang.
+      Am Sticky-Header würde der Browser nur um die Header-Höhe zurückscrollen. --}}
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    {{#if page.isHome}}
+    <a class="brand" href="#top" aria-label="{{site.name}} – zum Seitenanfang">
+    {{else}}
+    <a class="brand" href="{{url "/"}}" aria-label="{{site.name}} – zur Startseite">
+    {{/if}}
+      <span class="brand__mark" aria-hidden="true">
+        <svg class="icon"><use href="#i-bolt"/></svg>
+      </span>
+      <span class="brand__text">{{site.brand.prefix}} <strong>{{site.brand.name}}</strong></span>
+    </a>
+
+    <!-- Menü-Button direkt vor der Navigation: Tab führt nach dem Öffnen in die Menüpunkte. Sichtbar steht er rechts (CSS order). -->
+    <button class="nav-toggle" type="button" aria-controls="hauptnav" aria-expanded="false" data-nav-toggle>
+      <svg class="icon nav-toggle__open" aria-hidden="true"><use href="#i-menu"/></svg>
+      <svg class="icon nav-toggle__close" aria-hidden="true"><use href="#i-close"/></svg>
+      <span class="visually-hidden">Menü</span>
+    </button>
+
+    <!-- Bis P3 (Unterseiten) Anker auf die Abschnitte der Startseite -->
+    <nav class="nav" id="hauptnav" aria-label="Hauptnavigation" data-nav>
+      <ul class="nav__list">
+        <li><a class="nav__link" href="{{url "/#leistungen"}}">Leistungen</a></li>
+        <li><a class="nav__link" href="{{url "/#referenzen"}}">Referenzen</a></li>
+        <li><a class="nav__link" href="{{url "/#ueber-uns"}}">Über uns</a></li>
+        <li><a class="nav__link" href="{{url "/#karriere"}}">Karriere</a></li>
+        <li><a class="nav__link" href="{{url "/#kontakt"}}">Kontakt</a></li>
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="btn btn--accent header-call" href="{{tel site.phone}}">
+        <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+        <span class="header-call__label">{{site.phone.display}}</span>
+        <span class="visually-hidden header-call__sr">Anrufen</span>
+      </a>
+    </div>
+  </div>
+</header>

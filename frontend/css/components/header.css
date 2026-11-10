@@ -1,0 +1,217 @@
+/* Komponente: Header und Hauptnavigation. Mobile-first, Desktop ab 60em. */
+
+/* --- Header -------------------------------------------------------------- */
+.scroll-sentinel {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  width: 1px;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow var(--transition);
+}
+
+.site-header.is-scrolled {
+  box-shadow: var(--shadow-header);
+}
+
+.site-header__inner {
+  position: relative; /* Bezug für das mobile Menü-Panel */
+  display: flex;
+  flex-wrap: wrap; /* ohne JS bricht die Navigation mobil in eine zweite Zeile */
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--header-height);
+}
+
+/* Mobil sichtbar: Logo | Anruf-Button, Menü-Button. Im HTML steht der Menü-Button vor der Navigation (Tab-Reihenfolge). */
+.site-header__actions {
+  order: 1;
+  margin-left: auto;
+}
+.nav-toggle {
+  order: 2;
+}
+
+/* Logo */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-lg);
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand:hover {
+  color: var(--color-primary);
+}
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-accent);
+}
+
+.brand__mark .icon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+.brand__text strong {
+  font-weight: var(--fw-bold);
+}
+
+/* Rechte Seite: Anruf-Button + Menü-Toggle */
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Mobil: Anruf-Button nur als Icon */
+.header-call {
+  padding-inline: var(--space-3);
+  width: var(--tap-min);
+}
+
+.header-call__label {
+  display: none;
+}
+
+.nav-toggle {
+  display: none; /* nur mit JS sichtbar, siehe unten */
+  place-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.nav-toggle .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.nav-toggle__close {
+  display: none;
+}
+.nav-toggle[aria-expanded='true'] .nav-toggle__open {
+  display: none;
+}
+.nav-toggle[aria-expanded='true'] .nav-toggle__close {
+  display: block;
+}
+
+/* Navigation – Basis (ohne JS: horizontal scrollbare Zeile unter dem Logo) */
+.nav {
+  order: 3;
+  width: 100%;
+}
+
+.nav__list {
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.nav__link {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav__link:hover {
+  color: var(--color-primary);
+  background: var(--color-surface);
+}
+
+/* Mobil mit JS: Toggle zeigen, Navigation als ausklappbares Panel */
+@media (max-width: 59.99em) {
+  .js .nav-toggle {
+    display: grid;
+  }
+
+  .js .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    width: auto;
+    padding: var(--space-3) var(--container-pad) var(--space-5);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+  }
+
+  .js .nav.is-open {
+    display: block;
+  }
+
+  .js .nav__list {
+    flex-direction: column;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .js .nav__link {
+    min-height: 3rem;
+    font-size: var(--fs-lg);
+  }
+}
+
+/* Desktop */
+@media (min-width: 60em) {
+  .site-header__inner {
+    flex-wrap: nowrap;
+    gap: var(--space-4);
+  }
+
+  .nav {
+    order: 0;
+    width: auto;
+  }
+
+  .site-header__actions {
+    margin-left: 0;
+  }
+
+  .nav__list {
+    overflow: visible;
+    padding: 0;
+  }
+
+  .header-call {
+    width: auto;
+    padding-inline: var(--space-5);
+  }
+
+  .header-call__label {
+    display: inline;
+  }
+  .header-call__sr {
+    display: none;
+  }
+}

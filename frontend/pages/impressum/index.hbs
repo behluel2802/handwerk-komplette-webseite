@@ -1,0 +1,21 @@
+---
+title: Impressum
+description: "Impressum mit Anbieterkennzeichnung nach § 5 DDG, Kontaktdaten und Bildnachweisen dieser Website."
+robots: noindex
+callBar: false
+bodyClass: page-legal
+---
+<div class="section">
+  <div class="container legal">
+    <h1>Impressum</h1>
+    {{#if demo}}{{> legal/impressum-demo}}{{else}}{{> legal/impressum-vorlage}}{{/if}}
+
+    <h2>Bildnachweise</h2>
+    <p>Fotos von <a href="https://unsplash.com">Unsplash</a> unter der <a href="https://unsplash.com/license">Unsplash-Lizenz</a>{{#if demo}}. Es sind Stockfotos, sie zeigen keine Arbeiten eines echten Betriebs{{/if}}.</p>
+    <ul>
+      {{#each credits}}
+      <li><a href="{{sourceUrl}}">{{motif}}</a>, Foto von <a href="{{authorUrl}}">{{author}}</a></li>
+      {{/each}}
+    </ul>
+  </div>
+</div>

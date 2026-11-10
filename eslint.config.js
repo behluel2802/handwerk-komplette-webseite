@@ -9,12 +9,12 @@ export default [
   {
     languageOptions: { ecmaVersion: 'latest', sourceType: 'module', globals: globals.node },
     rules: {
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrors: 'none' }],
       eqeqeq: ['error', 'always'],
       'prefer-const': 'error',
     },
   },
   // Browser-Code
-  { files: ['frontend/js/**/*.js'], languageOptions: { globals: globals.browser } },
+  { files: ['frontend/js/**/*.js'], languageOptions: { globals: { ...globals.browser, __DEMO__: 'readonly' } } },
   prettier,
 ];

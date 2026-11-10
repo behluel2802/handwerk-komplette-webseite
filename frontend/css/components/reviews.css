@@ -1,0 +1,79 @@
+/* Komponente: Kundenstimmen. Mobile-first, Desktop ab 60em. */
+
+/* --- Referenzen: Kundenstimmen ------------------------------------------- */
+.reviews {
+  margin-top: var(--space-8);
+}
+
+.reviews__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.reviews__score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.reviews__score strong {
+  color: var(--color-primary);
+}
+
+.review__stars {
+  display: inline-flex;
+  gap: 0.1rem;
+  color: var(--color-star);
+}
+
+.review__stars .icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.reviews__list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 60em) {
+  .reviews__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+}
+
+.review figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-5);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.review blockquote {
+  flex-grow: 1;
+}
+
+.review figcaption {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.review figcaption strong {
+  color: var(--color-text);
+}
+
+.reviews__cta {
+  margin-top: var(--space-6);
+}

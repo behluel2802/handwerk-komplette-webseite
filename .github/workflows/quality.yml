@@ -30,6 +30,7 @@ jobs:
       # Codestil und typische Fehler (ESLint + Prettier)
       - run: npm run lint
       - run: npm run format:check
+      - run: npm run typecheck
 
       - uses: actions/cache@v4
         with:
@@ -66,8 +67,9 @@ jobs:
       - name: axe (WCAG 2.2 AA)
         run: |
           npx --yes @axe-core/cli@4.14.0 \
-            http://localhost:3000/ http://localhost:3000/impressum.html \
-            http://localhost:3000/datenschutz.html http://localhost:3000/danke.html \
+            http://localhost:3000/ http://localhost:3000/impressum/ \
+            http://localhost:3000/datenschutz/ http://localhost:3000/danke/ \
+            http://localhost:3000/leistungen/smart-home/ http://localhost:3000/404.html \
             --tags wcag2a,wcag2aa,wcag21a,wcag21aa,wcag22aa,best-practice \
             --chromedriver-path "$CHROMEWEBDRIVER/chromedriver" \
             --exit

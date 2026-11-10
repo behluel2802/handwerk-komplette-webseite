@@ -1,0 +1,174 @@
+/* Komponente: Kontakt (Anruf, Erreichbarkeit, Notdienst, Einzugsgebiet). Mobile-first, Desktop ab 60em. */
+
+/* --- Kontakt ------------------------------------------------------------- */
+/* Zwei klar priorisierte Wege: links Anruf (mobil zuerst), rechts kurzes Formular */
+.contact {
+  display: grid;
+  gap: var(--space-7);
+}
+
+@media (min-width: 60em) {
+  .contact {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: start;
+  }
+}
+
+.contact__heading {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-xl);
+}
+
+.contact__call {
+  width: 100%;
+}
+
+@media (min-width: 30em) {
+  .contact__call {
+    width: auto;
+  }
+}
+
+/* Live-Status „Jetzt erreichbar“ */
+.open-status {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-muted);
+}
+
+.open-status__dot {
+  flex-shrink: 0;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-text-muted);
+}
+
+.open-status.is-open {
+  color: var(--color-success);
+}
+.open-status.is-open .open-status__dot {
+  background: var(--color-success);
+  box-shadow: 0 0 0 4px var(--color-success-tint);
+}
+
+.hours {
+  width: 100%;
+  max-width: 20rem;
+  margin-top: var(--space-5);
+  border-collapse: collapse;
+}
+
+.hours th,
+.hours td {
+  padding-block: var(--space-2);
+  text-align: left;
+  vertical-align: top;
+}
+
+.hours tr + tr :is(th, td) {
+  border-top: 1px solid var(--color-border);
+}
+
+.hours th {
+  padding-right: var(--space-5);
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.contact__small {
+  margin-top: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.contact__alt {
+  margin-top: var(--space-5);
+}
+
+.contact__alt a {
+  display: inline-block; /* Adresse als Ganzes umbrechen, nicht am Bindestrich */
+  overflow-wrap: anywhere;
+}
+
+/* Notdienst: abgesetzt wie die Notdienst-Karte in den Leistungen */
+.contact__emergency {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: var(--color-on-primary-muted);
+}
+
+.contact__emergency > .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-accent);
+}
+
+.contact__emergency strong {
+  display: block;
+  color: var(--color-on-primary);
+}
+
+.contact__emergency-btn {
+  grid-column: 1 / -1; /* volle Breite unter Icon und Text, damit die Nummer nicht umbricht */
+  justify-self: start;
+  margin-top: var(--space-1);
+  white-space: nowrap;
+}
+
+@media (max-width: 29.99em) {
+  .contact__emergency-btn {
+    justify-self: stretch;
+  }
+}
+
+.contact__area {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.contact__area .icon {
+  margin-top: 0.15em;
+  color: var(--color-primary-light);
+}
+
+.contact__address {
+  display: block;
+  margin-top: var(--space-1);
+  overflow: hidden; /* schneidet die Trennpunkte am Zeilenanfang ab */
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+/* Jeder Teil hat seinen Trennpunkt VOR sich. Die Liste ist um genau diese Breite nach links
+   verschoben: Der Punkt des ersten Teils jeder Zeile liegt außerhalb und wird abgeschnitten. */
+.contact__address-list {
+  --sep: 0.75em; /* Abstand inkl. Punkt, entspricht etwa „ · “ */
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: calc(-1 * var(--sep));
+}
+
+.contact__address-list > span {
+  position: relative;
+  padding-left: var(--sep);
+  white-space: nowrap;
+}
+
+.contact__address-list > span::before {
+  content: '·';
+  content: '·' / ''; /* Screenreader lesen den Punkt nicht vor */
+  position: absolute;
+  left: calc(var(--sep) / 2 - 0.15em);
+}

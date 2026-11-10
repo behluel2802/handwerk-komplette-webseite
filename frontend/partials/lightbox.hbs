@@ -1,0 +1,22 @@
+{{!-- Lightbox für Galerien (data-gallery). js/lightbox.js wird nur auf Seiten mit Galerie geladen. --}}
+<dialog class="lightbox" aria-label="Projektfoto" data-lightbox>
+  <button class="lightbox__btn lightbox__close" type="button" data-lightbox-close>
+    <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+    <span class="visually-hidden">Schließen</span>
+  </button>
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" src="data:," alt="" data-lightbox-img>
+    <figcaption class="lightbox__caption">
+      <span data-lightbox-caption></span>
+      <span class="lightbox__counter" data-lightbox-counter></span>
+    </figcaption>
+  </figure>
+  <button class="lightbox__btn lightbox__prev" type="button" data-lightbox-prev>
+    <svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+    <span class="visually-hidden">Vorheriges Bild</span>
+  </button>
+  <button class="lightbox__btn lightbox__next" type="button" data-lightbox-next>
+    <svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+    <span class="visually-hidden">Nächstes Bild</span>
+  </button>
+</dialog>

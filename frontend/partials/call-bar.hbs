@@ -1,0 +1,11 @@
+{{!-- Feste Anruf-Leiste (nur mobil). Ohne JS immer sichtbar, mit JS auf der Startseite erst nach dem Hero. --}}
+<div class="call-bar" data-call-bar>
+  <a class="call-bar__item call-bar__item--call" href="{{tel site.phone}}">
+    <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+    Anrufen
+  </a>
+  <a class="call-bar__item" href="{{url "/#kontakt"}}">
+    <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+    Anfrage
+  </a>
+</div>

@@ -1,0 +1,82 @@
+/* Komponente: Referenz-Galerie. Mobile-first, Desktop ab 60em. */
+
+/* --- Referenzen: Galerie ------------------------------------------------- */
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr; /* Handy: 1 Spalte */
+  gap: var(--space-5) var(--space-4);
+}
+
+@media (min-width: 30em) {
+  .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Schmale 2-Spalten-Ansicht: kleinere Lupe */
+@media (min-width: 30em) and (max-width: 39.99em) {
+  .gallery__zoom {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .gallery__zoom .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+@media (min-width: 60em) {
+  .gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-5);
+  }
+}
+
+.gallery__link {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.gallery__link img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.gallery__link:hover img {
+  transform: scale(1.04);
+}
+
+.gallery__zoom {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--gallery-zoom-bg);
+  color: var(--color-on-primary);
+}
+
+.gallery__caption {
+  margin-top: var(--space-2);
+  overflow-wrap: break-word; /* lange Wörter auf kleinen Handys umbrechen */
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+
+.gallery__caption strong {
+  display: block;
+  color: var(--color-primary);
+  font-size: var(--fs-base);
+}
+
+.gallery__caption span {
+  color: var(--color-text-muted);
+}

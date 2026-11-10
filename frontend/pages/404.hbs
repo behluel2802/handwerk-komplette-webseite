@@ -1,0 +1,20 @@
+---
+title: Seite nicht gefunden
+description: "Diese Seite gibt es nicht (mehr). Hier geht es zur Startseite, zu unseren Leistungen und zum Kontakt."
+robots: noindex
+---
+{{!-- Fehlerseite: Backend (Status 404) und GitHub Pages liefern sie für unbekannte Adressen aus.
+      Alle Links absolut mit Basispfad, weil die Seite unter beliebigen Adressen erscheint. --}}
+<div class="section thanks">
+  <div class="container">
+    <div class="form-success">
+      <h1 class="form-success__title">Seite nicht gefunden</h1>
+      <p>Die aufgerufene Adresse gibt es nicht oder nicht mehr. Vielleicht hilft einer dieser Links weiter:</p>
+      <ul class="cluster not-found__links">
+        <li><a class="btn btn--primary" href="{{url "/"}}">Zur Startseite</a></li>
+        <li><a class="btn btn--outline" href="{{url "/#leistungen"}}">Leistungen</a></li>
+        <li><a class="btn btn--outline" href="{{url "/#kontakt"}}">Kontakt</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

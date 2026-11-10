@@ -1,0 +1,23 @@
+{{!--
+  Template für Leistungs-Detailseiten (Sammlung „leistungen“, content/leistungen/*.md).
+  Kontext page: Felder aus dem Front-Matter (Schema in scripts/content.js) + html (gerenderter Markdown-Text), url, slug.
+  P2: schlichte Fassung, die den Generator belegt. Unterseiten-Hero, Breadcrumb, „Weitere Leistungen“ folgen in P3/P4.
+--}}
+<div class="section">
+  <div class="container legal">
+    <h1>{{page.heading}}</h1>
+    <p class="lead">{{page.teaser}}</p>
+
+    {{{page.html}}}
+
+    {{#if page.faq}}
+    <h2>Häufige Fragen</h2>
+    {{#each page.faq}}
+    <details>
+      <summary>{{frage}}</summary>
+      <p>{{antwort}}</p>
+    </details>
+    {{/each}}
+    {{/if}}
+  </div>
+</div>

@@ -1,0 +1,17 @@
+---
+title: Anfrage nicht gesendet
+description: "Ihre Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut oder rufen Sie uns direkt an."
+robots: noindex
+---
+{{!-- Fehlerseite für das Absenden ohne JavaScript. Das Backend ersetzt den Text zwischen den Markierungen
+      durch die konkrete Meldung (backend/server.js → htmlError) und liefert die Seite mit passendem Status aus. --}}
+<div class="section thanks">
+  <div class="container">
+    <div class="form-success">
+      <h1 class="form-success__title">Anfrage nicht gesendet</h1>
+      <p><!--fehler-->Ihre Anfrage konnte leider nicht gesendet werden.<!--/fehler--></p>
+      <p class="contact__small">Rufen Sie uns gern direkt an: <a href="{{tel site.phone}}">{{site.phone.display}}</a></p>
+      <a class="btn btn--primary" href="{{url "/#kontakt"}}">Zurück zum Formular</a>
+    </div>
+  </div>
+</div>

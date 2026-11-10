@@ -1,0 +1,19 @@
+/* Komponente: Hinweisleiste der öffentlichen Demo (nur im Demo-Build). Scrollt mit, nicht fixiert. */
+
+.demo-bar {
+  background: var(--color-accent-tint);
+  border-bottom: 1px solid var(--color-accent);
+  color: var(--color-primary);
+  font-size: var(--fs-sm);
+}
+
+.demo-bar__text {
+  padding-block: var(--space-2);
+  text-align: center;
+}
+
+.demo-bar a {
+  color: var(--color-primary);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}

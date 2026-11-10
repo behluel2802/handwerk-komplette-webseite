@@ -1,0 +1,80 @@
+{{!--
+  Kontaktformular mit Bestätigung (Startseite, später Kontaktseite). Verhalten: js/contact-form.js
+  Normal: Versand per fetch an das eigene Backend, ohne JS normales POST an die action.
+  Demo (Briefing R6): sendet nie etwas. Keine action, Absende-Button erst mit JS (type="button" verhindert jedes
+  Absenden ohne JS; bei mehreren Textfeldern gibt es auch kein implizites Absenden per Enter).
+--}}
+<div class="contact__form"><!-- Container für die Chip-Spalten -->
+  <form class="contact-form"{{#unless demo}} action="/api/kontakt" method="post"{{/unless}} data-contact-form{{#unless demo}} data-endpoint="/api/kontakt"{{/unless}}>
+    <h3 class="contact-form__title">Oder schreiben Sie uns</h3>
+    <p class="contact-form__hint">Pflichtfelder sind mit <span aria-hidden="true">*</span><span class="visually-hidden">Stern</span> markiert.</p>
+
+    <fieldset class="chips">
+      <legend>Worum geht es? <span class="field__opt">(optional)</span></legend>
+      <div class="chips__list">
+        <label class="chip"><input type="radio" name="anliegen" value="Elektroinstallation"><span>Installation</span></label>
+        <label class="chip"><input type="radio" name="anliegen" value="Altbausanierung"><span>Sanierung</span></label>
+        <label class="chip"><input type="radio" name="anliegen" value="Smart Home"><span>Smart Home</span></label>
+        <label class="chip"><input type="radio" name="anliegen" value="PV &amp; Wallbox"><span>PV &amp; Wallbox</span></label>
+        <label class="chip"><input type="radio" name="anliegen" value="E-Check"><span>E&#8209;Check</span></label>
+        <label class="chip"><input type="radio" name="anliegen" value="Sonstiges"><span>Sonstiges</span></label>
+      </div>
+    </fieldset>
+
+    <div class="field">
+      <label for="cf-name">Name <span class="field__req" aria-hidden="true">*</span></label>
+      <input id="cf-name" name="name" type="text" autocomplete="name" required maxlength="100" aria-describedby="cf-name-error">
+      <p class="field__error" id="cf-name-error" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="cf-contact">Telefon oder E-Mail <span class="field__req" aria-hidden="true">*</span></label>
+      <input id="cf-contact" name="kontakt" type="text" required maxlength="200" aria-describedby="cf-contact-hint cf-contact-error">
+      <p class="field__hint" id="cf-contact-hint">Wir melden uns auf dem Weg, den Sie angeben.</p>
+      <p class="field__error" id="cf-contact-error" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="cf-message">Nachricht <span class="field__req" aria-hidden="true">*</span></label>
+      <textarea id="cf-message" name="nachricht" rows="4" required minlength="10" maxlength="5000" aria-describedby="cf-message-error"
+                placeholder="z. B. Wir möchten eine Wallbox in der Garage installieren lassen."></textarea>
+      <p class="field__error" id="cf-message-error" hidden></p>
+    </div>
+
+    <!-- Honeypot gegen Spam-Bots: für Menschen unsichtbar, muss leer bleiben -->
+    <div class="contact-form__hp" aria-hidden="true">
+      <label for="cf-website">Website</label>
+      <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off">
+    </div>
+
+    {{#if demo}}
+    <button class="btn btn--primary btn--lg contact-form__submit" type="button" data-demo-submit>
+      <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+      Anfrage senden
+    </button>
+    <p class="contact-form__nojs">Demo: Dieses Formular sendet nichts. Zum Ausprobieren der Prüfung JavaScript aktivieren.</p>
+    <p class="contact-form__note">Demo: Ihre Eingaben werden nur in Ihrem Browser geprüft und nicht übertragen. Mehr dazu in der <a href="{{url "/datenschutz/"}}">Datenschutzerklärung</a>.</p>
+    {{else}}
+    <button class="btn btn--primary btn--lg contact-form__submit" type="submit">
+      <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+      Anfrage senden
+    </button>
+    <p class="contact-form__note">Ihre Angaben verwenden wir nur zur Bearbeitung Ihrer Anfrage. Mehr dazu in der <a href="{{url "/datenschutz/"}}">Datenschutzerklärung</a>.</p>
+    {{/if}}
+
+    <div class="form-status" data-form-status role="status" tabindex="-1"></div>
+  </form>
+
+  <!-- Bestätigung ersetzt das Formular nach dem Absenden -->
+  <div class="form-success" data-form-success tabindex="-1" hidden>
+    <svg class="icon form-success__icon" aria-hidden="true"><use href="#i-check"/></svg>
+    <h3 class="form-success__title" data-form-success-title>Vielen Dank!</h3>
+    {{#if demo}}
+    <p>So sähe die Bestätigung aus. Ein echter Betrieb würde sich {{site.responseTime}} melden.</p>
+    <p class="form-success__demo">Demo-Version: Es wurde keine Anfrage verschickt.</p>
+    {{else}}
+    <p>Ihre Anfrage ist bei uns angekommen. Wir melden uns {{site.responseTime}}.</p>
+    <p class="contact__small">Eilig? Rufen Sie uns an: <a href="{{tel site.phone}}">{{site.phone.display}}</a></p>
+    {{/if}}
+  </div>
+</div>

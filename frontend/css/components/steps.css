@@ -1,0 +1,76 @@
+/* Komponente: Ablauf (Schritte). Mobile-first, Desktop ab 60em. */
+
+/* --- Ablauf ------------------------------------------------------------- */
+/* Mobil/Tablet: vertikale Zeitleiste, ab 60em horizontal mit Verbindungslinie */
+.steps {
+  --step-size: 3rem;
+  --step-gap: var(--space-6);
+  display: grid;
+  gap: var(--step-gap);
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--step-size) 1fr;
+  align-content: start; /* gestreckte Schritte nicht auf die Zeilen verteilen */
+  gap: var(--space-4);
+}
+
+/* Linie zum nächsten Schritt */
+.step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: var(--step-size);
+  bottom: calc(-1 * var(--step-gap));
+  left: calc(var(--step-size) / 2 - 1px);
+  width: 2px;
+  background: var(--color-step-line);
+}
+
+.step__num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--step-size);
+  height: var(--step-size);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+}
+
+.step h3 {
+  margin-top: calc((var(--step-size) - 1.4em) / 2); /* Titel mittig zur Nummer */
+  margin-bottom: var(--space-1);
+  font-size: var(--fs-lg);
+}
+
+.step p {
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 60em) {
+  .steps {
+    --step-gap: var(--space-5);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .step {
+    grid-template-columns: 1fr;
+  }
+
+  .step:not(:last-child)::before {
+    top: calc(var(--step-size) / 2 - 1px);
+    bottom: auto;
+    left: calc(var(--step-size) + var(--space-3));
+    right: calc(-1 * var(--step-gap) + var(--space-3));
+    width: auto;
+    height: 2px;
+  }
+
+  .step h3 {
+    margin-top: 0;
+  }
+}

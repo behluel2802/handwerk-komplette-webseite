@@ -12,20 +12,25 @@
   "scripts": {
     "dev": "concurrently --names web,api --prefix-colors yellow,blue --kill-others-on-fail \"npm run dev -w frontend\" \"npm run dev -w backend\"",
     "build": "npm run build -w frontend",
+    "build:demo": "npm run build:demo -w frontend",
     "start": "npm start -w backend",
     "test": "npm test --workspaces --if-present",
     "images": "npm run images -w frontend",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/markdown-it": "^14.2.0",
+    "@types/node": "^26.6.6",
     "concurrently": "^10.0.7",
     "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.14.0",
-    "prettier": "^3.9.10"
+    "prettier": "^3.9.10",
+    "typescript": "^7.0.2"
   },
   "type": "module"
 }

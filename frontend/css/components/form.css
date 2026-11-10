@@ -1,0 +1,316 @@
+/* Komponente: Formular (Karte, Chips, Felder, Status, Bestätigung, Danke-Seite). Mobile-first, Desktop ab 60em. */
+
+/* Formular-Karte */
+.contact-form,
+.form-success {
+  position: relative; /* Bezug für Honeypot und leeren Status */
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 40em) {
+  .contact-form,
+  .form-success {
+    padding: var(--space-6);
+  }
+}
+
+.contact-form[hidden],
+.form-success[hidden] {
+  display: none;
+}
+
+.contact-form__title {
+  font-size: var(--fs-xl);
+}
+
+.contact-form__hint {
+  margin-top: calc(-1 * var(--space-3));
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+/* Anliegen als Chips (Radio-Buttons, Pfeiltasten funktionieren nativ) */
+.chips {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.chips legend {
+  margin-bottom: var(--space-3);
+  padding: 0;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+/* Spaltenzahl nach der Breite der Formular-Karte (nicht des Bildschirms):
+   schmal 1 Spalte → ab 22rem 2 → ab 32rem 3. Alle Reihen gleich hoch. */
+.contact__form {
+  container: contact-form / inline-size;
+}
+
+.chips__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 1fr;
+  gap: var(--space-2);
+}
+
+@container contact-form (min-width: 22rem) {
+  .chips__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container contact-form (min-width: 32rem) {
+  .chips__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.chip {
+  position: relative;
+  cursor: pointer;
+}
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chip span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-input-bg);
+  color: var(--color-primary);
+  font-weight: var(--fw-semibold);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.chip:hover span {
+  border-color: var(--color-primary);
+}
+
+.chip input:checked + span {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.chip input:focus-visible + span {
+  box-shadow: var(--focus-ring);
+}
+
+/* Felder */
+.field {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+}
+
+.field label {
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+
+.field__req {
+  color: var(--color-error);
+}
+
+.field__opt,
+.field__hint {
+  font-weight: var(--fw-normal);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-input-bg);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.field input {
+  height: var(--tap-min);
+}
+
+.field textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+.field :is(input, textarea)::placeholder {
+  color: var(--color-text-muted);
+}
+
+.field :is(input, textarea):focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.field :is(input, textarea)[aria-invalid='true'] {
+  border-color: var(--color-error);
+  border-width: 2px;
+}
+
+.field__error {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-error);
+}
+
+.field__error::before {
+  content: '⚠';
+} /* Fehler nicht nur über Farbe erkennbar */
+
+/* Honeypot: aus dem sichtbaren Bereich, aber nicht display:none (manche Bots ignorieren das) */
+.contact-form__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contact-form__submit {
+  justify-self: start;
+}
+
+@media (max-width: 29.99em) {
+  .contact-form__submit {
+    justify-self: stretch;
+  }
+}
+
+.contact-form__note {
+  margin-top: calc(-1 * var(--space-2));
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.contact-form.is-sending .contact-form__submit {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* Leer: visuell weg, bleibt aber als Live-Region im Accessibility-Tree */
+.form-status:empty {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.form-status {
+  padding: var(--space-4);
+  border-left: 4px solid currentColor;
+  border-radius: var(--radius-sm);
+  background: var(--color-error-tint);
+  color: var(--color-error);
+  font-weight: var(--fw-semibold);
+}
+
+.form-status:focus {
+  outline: none;
+}
+.form-status:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* Bestätigung */
+.form-success {
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.form-success:focus {
+  outline: none;
+}
+
+.form-success__icon {
+  width: 3rem;
+  height: 3rem;
+  padding: var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+.form-success__title {
+  font-size: var(--fs-xl);
+}
+
+.form-success__demo {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-tint);
+  color: var(--color-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+/* Danke-Seite (Absenden ohne JS) */
+.thanks .form-success {
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+.thanks .btn {
+  margin-top: var(--space-3);
+}
+
+/* Demo (Briefing R6): ohne JS Hinweis statt Absende-Button, mit JS umgekehrt */
+html:not(.js) [data-demo-submit] {
+  display: none;
+}
+
+.js .contact-form__nojs {
+  display: none;
+}
+
+.contact-form__nojs {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-tint);
+  color: var(--color-primary);
+  font-weight: var(--fw-semibold);
+}
+
+/* 404-Seite: Linkliste als Buttons */
+.not-found__links {
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+.not-found__links .btn {
+  margin-top: 0;
+}

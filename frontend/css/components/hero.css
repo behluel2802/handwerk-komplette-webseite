@@ -1,0 +1,106 @@
+/* Komponente: Hero. Mobile-first, Desktop ab 60em. */
+
+/* --- Hero ---------------------------------------------------------------- */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: min(38rem, calc(100svh - var(--header-height)));
+  padding-block: var(--space-8);
+  background: var(--hero-placeholder);
+  color: var(--color-on-primary);
+}
+
+/* Foto-Ebene (ab Schritt 5) mit Overlay darüber */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero__media picture,
+.hero__media img {
+  width: 100%;
+  height: 100%;
+}
+
+.hero__media img {
+  object-fit: cover;
+  object-position: 70% 30%; /* Gesicht und Hände bleiben auch im schmalen Zuschnitt sichtbar */
+}
+
+.hero__media:has(img)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--hero-overlay-mobile); /* mobil liegt Text über dem ganzen Bild */
+}
+
+@media (min-width: 60em) {
+  .hero__media:has(img)::after {
+    background: var(--hero-overlay);
+  }
+}
+
+.hero__inner > * {
+  max-width: 42rem;
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-accent-soft);
+  border-radius: var(--radius-lg); /* kein Pill: sieht bei Umbruch auf dem Handy besser aus */
+  color: var(--color-accent);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.hero__eyebrow .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.hero h1 {
+  color: var(--color-on-primary);
+}
+
+.hero__lead {
+  margin-block: var(--space-4) var(--space-6);
+  font-size: var(--fs-lg);
+  color: var(--color-on-primary-muted);
+}
+
+.hero__actions {
+  gap: var(--space-3);
+}
+
+@media (max-width: 29.99em) {
+  .hero__actions .btn {
+    width: 100%;
+  } /* Kleine Handys: Buttons untereinander, volle Breite */
+}
+
+.hero__usps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-top: var(--space-6);
+  padding: 0;
+  list-style: none;
+  color: var(--color-on-primary-muted);
+}
+
+.hero__usps li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hero__usps .icon {
+  color: var(--color-accent);
+}

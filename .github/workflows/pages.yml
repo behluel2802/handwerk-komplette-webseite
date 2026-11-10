@@ -1,19 +1,19 @@
-# Demo-Vorschau auf GitHub Pages (Schritt 12b)
-# Baut die Seite mit Vite und veröffentlicht ausschließlich frontend/dist/ – backend/, docs/ und .env gelangen nie auf Pages.
-# In der veröffentlichten Kopie wird <meta name="robots" content="noindex"> ergänzt,
-# die Dateien im Repo bleiben unverändert (für späteres echtes Hosting, Schritt 14).
-# Einmalig nötig: Settings → Pages → Source „GitHub Actions“.
+# Öffentliche Demo auf GitHub Pages (Schritt 12b, rechtssicher seit P2: Briefing R1–R14)
+# Baut den Demo-Build (npm run build:demo): Impressum/Datenschutz mit den Betreiberdaten, Hinweisleiste, noindex auf
+# allen Seiten, Formulare senden nichts, Anruf-Buttons wählen nicht. Veröffentlicht wird ausschließlich frontend/dist/.
+#
+# Einmalig nötig:
+#   - Settings → Pages → Source „GitHub Actions“
+#   - Settings → Secrets and variables → Actions → Variables: OPERATOR_NAME, OPERATOR_STREET, OPERATOR_ZIP,
+#     OPERATOR_CITY, OPERATOR_EMAIL, OPERATOR_PHONE, OPERATOR_STATE (Vorlage: frontend/.env.demo.example).
+#     Fehlt eine, bricht der Build ab – es wird nie eine Demo ohne gültiges Impressum veröffentlicht.
+#
+# Vorerst nur manuell (R13): automatischer Deploy bei Push wird in P7 wieder aktiviert,
+# wenn Impressum und Datenschutzerklärung final geprüft sind.
 
 name: Demo auf GitHub Pages
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'frontend/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -55,8 +55,17 @@ jobs:
           key: images-${{ hashFiles('frontend/img-src/**', 'frontend/images.config.js', 'frontend/scripts/images.js') }}
           restore-keys: images-
 
-      # Erzeugt zuerst die Bilder (img-src/ → img/), dann dist/
-      - run: npm run build
+      # Erzeugt zuerst die Bilder (img-src/ → img/), dann den Demo-Build in dist/
+      - run: npm run build:demo
+        env:
+          BASE: /${{ github.event.repository.name }}/
+          OPERATOR_NAME: ${{ vars.OPERATOR_NAME }}
+          OPERATOR_STREET: ${{ vars.OPERATOR_STREET }}
+          OPERATOR_ZIP: ${{ vars.OPERATOR_ZIP }}
+          OPERATOR_CITY: ${{ vars.OPERATOR_CITY }}
+          OPERATOR_EMAIL: ${{ vars.OPERATOR_EMAIL }}
+          OPERATOR_PHONE: ${{ vars.OPERATOR_PHONE }}
+          OPERATOR_STATE: ${{ vars.OPERATOR_STATE }}
 
       # Vorkomprimierte .br/.gz nur für das eigene Backend – GitHub Pages komprimiert selbst
       - name: Nur die gebaute Seite kopieren
@@ -64,13 +73,11 @@ jobs:
           cp -r frontend/dist _site
           find _site \( -name '*.br' -o -name '*.gz' \) -delete
 
-      - name: noindex in die Demo-Kopie einfügen
+      # Sicherheitsnetz: jede Seite muss noindex tragen (setzt das Layout im Demo-Modus)
+      - name: noindex prüfen
         run: |
-          for f in _site/*.html; do
-            grep -q 'name="robots"' "$f" && continue
-            sed -i 's|<meta charset="utf-8">|&\n  <meta name="robots" content="noindex">|' "$f"
-            grep -q 'name="robots"' "$f" || { echo "noindex fehlt in $f"; exit 1; }
-          done
+          missing=$(find _site -name '*.html' -exec grep -L 'name="robots" content="noindex"' {} +)
+          [ -z "$missing" ] || { echo "noindex fehlt in: $missing"; exit 1; }
 
       - uses: actions/configure-pages@v5
 

@@ -1,0 +1,16 @@
+{
+  // Typprüfung des Build-Codes per JSDoc (npm run typecheck), es wird nichts kompiliert.
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "strict": false,
+    "noEmit": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2023",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": ["frontend/scripts/**/*.js", "frontend/vite.config.js"]
+}

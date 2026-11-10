@@ -1,0 +1,117 @@
+/* Komponente: Lightbox. Mobile-first, Desktop ab 60em. */
+
+/* --- Lightbox ------------------------------------------------------------ */
+.lightbox {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  padding: var(--space-8) var(--space-3) calc(var(--tap-min) + var(--space-5)); /* unten Platz für die Pfeile */
+  border: 0;
+  background: transparent;
+  color: var(--color-on-primary);
+}
+
+.lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+
+.lightbox::backdrop {
+  background: var(--lightbox-backdrop);
+}
+
+/* Seite hinter der offenen Lightbox nicht scrollen */
+html:has(.lightbox[open]) {
+  overflow: hidden;
+}
+
+.lightbox__figure {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  max-width: 100%;
+}
+
+.lightbox__img {
+  width: auto;
+  max-width: min(100%, 75rem);
+  max-height: calc(100svh - 9rem);
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  touch-action: pan-y pinch-zoom; /* horizontales Wischen übernimmt das JS */
+}
+
+.lightbox__caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1) var(--space-3);
+  text-align: center;
+  color: var(--color-on-primary-muted);
+}
+
+.lightbox__counter {
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+}
+
+.lightbox__btn {
+  position: fixed;
+  display: grid;
+  place-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--lightbox-btn-bg);
+  color: var(--color-on-primary);
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.lightbox__btn:hover {
+  background: var(--lightbox-btn-bg-hover);
+}
+.lightbox__btn .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.lightbox__close {
+  top: var(--space-3);
+  right: var(--space-3);
+}
+
+/* Handy: Pfeile unten, damit sie das Bild nicht verdecken */
+.lightbox__prev,
+.lightbox__next {
+  bottom: var(--space-3);
+}
+.lightbox__prev {
+  left: var(--space-3);
+}
+.lightbox__next {
+  right: var(--space-3);
+}
+
+@media (min-width: 40em) {
+  .lightbox {
+    padding: var(--space-6) var(--space-8);
+  }
+
+  .lightbox__prev,
+  .lightbox__next {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+
+  .lightbox__prev {
+    left: var(--space-4);
+  }
+  .lightbox__next {
+    right: var(--space-4);
+  }
+}

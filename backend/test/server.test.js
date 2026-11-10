@@ -30,6 +30,15 @@ before(async () => {
   await writeFile(path.join(root, '.env'), 'SMTP_PASS=geheim');
   await writeFile(path.join(root, '.git', 'config'), '[core]');
   await writeFile(path.join(dir, 'secret.html'), 'außerhalb');
+  // Ordner-URLs, 404- und Fehlerseite wie im echten Build
+  await mkdir(path.join(root, 'impressum'));
+  await writeFile(path.join(root, 'impressum', 'index.html'), '<!doctype html><script>window.y = 2;</script>Impressum');
+  await mkdir(path.join(root, 'anfrage-fehler'));
+  await writeFile(
+    path.join(root, 'anfrage-fehler', 'index.html'),
+    '<!doctype html><p><!--fehler-->Standardtext<!--/fehler--></p>',
+  );
+  await writeFile(path.join(root, '404.html'), '<!doctype html><h1>Seite nicht gefunden</h1>');
   await symlink(path.join(dir, 'secret.html'), path.join(root, 'link.html'));
 });
 
@@ -112,7 +121,7 @@ test('Alle Dateitypen aus dem Build werden ausgeliefert', async () => {
 test('CSP enthält die Inline-Skripte aller Seiten', () =>
   withServer({}, async ({ port }) => {
     const csp = (await raw(port, { path: '/' })).headers['content-security-policy'];
-    assert.equal(csp.match(/'sha256-/g).length, 2);
+    assert.equal(csp.match(/'sha256-/g).length, 3); // index.html, unterseite.html, impressum/index.html
   }));
 
 test('Fehlender Build-Ordner → verständliche Fehlermeldung', async () => {
@@ -174,11 +183,11 @@ test('Kontakt: gültige JSON-Anfrage wird versendet', () =>
     assert.equal(sent[0].kontaktart, 'email');
   }));
 
-test('Kontakt: ohne JS (Formulardaten) → Weiterleitung auf danke.html', () =>
+test('Kontakt: ohne JS (Formulardaten) → Weiterleitung auf /danke/', () =>
   withServer({}, async ({ port, sent }) => {
     const res = await post(port, valid, 'application/x-www-form-urlencoded');
     assert.equal(res.status, 303);
-    assert.equal(res.headers.location, '/danke.html');
+    assert.equal(res.headers.location, '/danke/');
     assert.equal(sent.length, 1);
   }));
 
@@ -247,3 +256,32 @@ test('Kontakt: Versandfehler → 502 mit Meldung', () =>
       }
     },
   ));
+
+test('Ordner-URLs: /impressum/ liefert index.html, /impressum → 301 mit Query', () =>
+  withServer({}, async ({ port }) => {
+    const page = await raw(port, { path: '/impressum/' });
+    assert.equal(page.status, 200);
+    assert.match(page.body, /Impressum/);
+    const redirect = await raw(port, { path: '/impressum?x=1' });
+    assert.equal(redirect.status, 301);
+    assert.equal(redirect.headers.location, '/impressum/?x=1');
+  }));
+
+test('Unbekannte Adresse → gebaute 404-Seite mit Status 404', () =>
+  withServer({}, async ({ port }) => {
+    for (const p of ['/gibt-es-nicht', '/gibt-es-nicht/', '/impressum/fehlt.html']) {
+      const res = await raw(port, { path: p });
+      assert.equal(res.status, 404, p);
+      assert.match(res.headers['content-type'], /text\/html/);
+      assert.match(res.body, /Seite nicht gefunden/);
+    }
+  }));
+
+test('Kontakt ohne JS, ungültig → Fehlerseite aus dem Build mit maskierter Meldung', () =>
+  withServer({}, async ({ port, sent }) => {
+    const res = await post(port, { ...valid, name: '' }, 'application/x-www-form-urlencoded');
+    assert.equal(res.status, 422);
+    assert.match(res.body, /<p>Bitte geben Sie Ihren Namen an\.<\/p>/);
+    assert.doesNotMatch(res.body, /Standardtext|<!--fehler-->/);
+    assert.equal(sent.length, 0);
+  }));

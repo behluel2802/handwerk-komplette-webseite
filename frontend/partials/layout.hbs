@@ -1,0 +1,66 @@
+{{!--
+  Layout für alle Seiten (scripts/pages.js rendert die Seite und setzt sie als body ein).
+  Kontext: site (site.json), page (Front-Matter bzw. Content-Eintrag + url, isHome, noindex, callBar, fullTitle),
+  demo (öffentliche Demo), operator (Betreiber, nur Demo), collections, credits.
+--}}
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{page.fullTitle}}</title>
+  <meta name="description" content="{{page.description}}">
+  {{#if page.noindex}}
+  <meta name="robots" content="noindex">
+  {{/if}}
+  <meta name="theme-color" content="#0f2a4a">
+  {{> head-icons}}
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{page.fullTitle}}">
+  <meta property="og:description" content="{{page.description}}">
+  <meta property="og:locale" content="de_DE">
+  {{#if page.isHome}}
+  <!-- TODO (P6): og:image/og:url als absolute URL aus site.url für alle Seiten -->
+  <meta property="og:image" content="{{site.url}}/img/hero-1280.jpg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="855">
+  {{/if}}
+
+  <!-- Progressive Enhancement: Styles für JS-abhängige Elemente erst aktivieren, wenn JS läuft -->
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="stylesheet" href="/css/main.css">
+  <script type="module" src="/js/main.js"></script>
+  {{#if page.isHome}}
+
+  <!-- Strukturierte Daten, erzeugt aus site.json (scripts/site.js → jsonLd).
+       Keine aggregateRating: Eigene Bewertungen im LocalBusiness-Markup wertet Google nicht aus (Richtlinie „self-serving reviews“).
+       Schritt 14: image/logo als absolute URL ergänzen. -->
+  <script type="application/ld+json">
+{{{jsonLd site}}}
+  </script>
+  {{/if}}
+</head>
+<body{{#if page.bodyClass}} class="{{page.bodyClass}}"{{/if}}>
+  {{> sprite}}
+
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  {{#if demo}}{{> demo-bar}}{{/if}}
+
+  <!-- Unsichtbarer Marker ganz oben: steuert den Header-Schatten beim Scrollen -->
+  <div class="scroll-sentinel" data-scroll-sentinel aria-hidden="true"></div>
+
+  {{> header}}
+
+  <main id="main">
+{{{body}}}
+  </main>
+
+  {{> footer}}
+
+  {{#if page.callBar}}{{> call-bar}}{{/if}}
+</body>
+</html>

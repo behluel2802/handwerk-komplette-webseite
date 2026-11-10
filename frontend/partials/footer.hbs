@@ -1,4 +1,4 @@
-{{!-- Footer für alle Seiten. Kontext aus vite.config.js: site (Firmendaten), home (Präfix für Anker), current.<seite> (aktuelle Seite) --}}
+{{!-- Footer für alle Seiten. Kontext: siehe partials/layout.hbs --}}
 <footer class="site-footer">
   <div class="container">
     <div class="site-footer__grid">
@@ -22,8 +22,8 @@
       <div class="site-footer__col">
         <h2 class="site-footer__title">Kontakt</h2>
         <ul class="site-footer__list">
-          <li>Telefon <a href="tel:{{site.phone.tel}}">{{site.phone.display}}</a></li>
-          <li class="site-footer__emergency">24/7-Notdienst <a href="tel:{{site.emergency.tel}}">{{site.emergency.display}}</a></li>
+          <li>Telefon <a href="{{tel site.phone}}">{{site.phone.display}}</a></li>
+          <li class="site-footer__emergency">24/7-Notdienst <a href="{{tel site.emergency}}">{{site.emergency.display}}</a></li>
           <li><a href="mailto:{{site.email}}">{{site.email}}</a></li>
         </ul>
         <p class="site-footer__muted">{{#each site.hours.week}}{{#unless @first}}<br>{{/unless}}{{dayRange days}} {{time from}}–{{time to}} Uhr{{/each}}</p>
@@ -32,11 +32,11 @@
       <nav class="site-footer__col" aria-labelledby="footer-seite">
         <h2 class="site-footer__title" id="footer-seite">Seite</h2>
         <ul class="site-footer__list">
-          <li><a href="{{home}}#leistungen">Leistungen</a></li>
-          <li><a href="{{home}}#referenzen">Referenzen</a></li>
-          <li><a href="{{home}}#ueber-uns">Über uns</a></li>
-          <li><a href="{{home}}#karriere">Karriere</a></li>
-          <li><a href="{{home}}#kontakt">Kontakt</a></li>
+          <li><a href="{{url "/#leistungen"}}">Leistungen</a></li>
+          <li><a href="{{url "/#referenzen"}}">Referenzen</a></li>
+          <li><a href="{{url "/#ueber-uns"}}">Über uns</a></li>
+          <li><a href="{{url "/#karriere"}}">Karriere</a></li>
+          <li><a href="{{url "/#kontakt"}}">Kontakt</a></li>
           {{#if site.rating.profileUrl}}<li><a href="{{site.rating.profileUrl}}">Bewertungen auf Google</a></li>{{/if}}
         </ul>
       </nav>
@@ -45,8 +45,8 @@
     <div class="site-footer__bottom">
       <p>&copy; <span data-year>2026</span> {{site.name}}</p>
       <ul class="site-footer__legal">
-        <li><a href="impressum.html"{{#if current.impressum}} aria-current="page"{{/if}}>Impressum</a></li>
-        <li><a href="datenschutz.html"{{#if current.datenschutz}} aria-current="page"{{/if}}>Datenschutz</a></li>
+        <li><a href="{{url "/impressum/"}}"{{current "/impressum/"}}>Impressum</a></li>
+        <li><a href="{{url "/datenschutz/"}}"{{current "/datenschutz/"}}>Datenschutz</a></li>
       </ul>
       <p class="site-footer__note">Fiktiver Betrieb – Übungsprojekt</p>
     </div>

@@ -1,0 +1,71 @@
+/* Komponente: CTA-Box. Mobile-first, Desktop ab 60em. */
+
+/* CTA-Box (Ablauf, Karriere): drei feste Zustände für 2 Buttons
+   1. schmal:  Text, darunter die Buttons untereinander (volle Breite, nur auf kleinen Boxen)
+   2. mittel:  Text, darunter 2 gleich breite Buttons in einer Reihe
+   3. breit:   Text links, Buttons rechts in einer Zeile
+   Gesteuert per Container Query über die Breite der Box. */
+.cta-box {
+  container: cta-box / inline-size;
+  margin-top: var(--space-7);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+.cta-box__inner {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.cta-box__text {
+  color: var(--color-primary);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+}
+
+.cta-box__actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.cta-box__actions .btn {
+  width: 100%;
+  padding-inline: var(--space-4); /* kompakter, damit die Reihe früher passt */
+  white-space: nowrap;
+}
+
+@container cta-box (min-width: 26rem) {
+  .cta-box__actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container cta-box (min-width: 48rem) {
+  .cta-box__inner {
+    grid-template-columns: auto auto;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cta-box__actions {
+    grid-template-columns: repeat(2, auto);
+  }
+}
+
+/* Variante auf dunklem Hintergrund (Karriere) */
+.cta-box--dark {
+  border-color: var(--color-accent-soft);
+  background: var(--color-primary-dark);
+}
+
+.cta-box--dark .cta-box__text {
+  color: var(--color-on-primary);
+}
+
+.cta-box__sub {
+  margin-top: var(--space-2);
+  max-width: 34rem;
+  color: var(--color-on-primary-muted);
+}

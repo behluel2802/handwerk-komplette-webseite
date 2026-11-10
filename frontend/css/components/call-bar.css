@@ -1,0 +1,73 @@
+/* Komponente: Anruf-Leiste (nur mobil). Mobile-first, Desktop ab 60em. */
+
+/* --- Anruf-Leiste (nur mobil) -------------------------------------------- */
+.call-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-bottom: env(safe-area-inset-bottom); /* iPhone-Home-Indikator */
+  background: var(--color-primary);
+  box-shadow: var(--shadow-call-bar);
+}
+
+.call-bar__item {
+  display: flex;
+  flex-wrap: wrap; /* bei großem Text/Textabstand umbrechen statt überlaufen */
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 0;
+  text-align: center;
+  min-height: var(--call-bar-height);
+  color: var(--color-on-primary);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+}
+
+.call-bar__item:hover {
+  color: var(--color-on-primary);
+}
+
+.call-bar__item--call {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.call-bar__item--call:hover {
+  color: var(--color-on-accent);
+}
+
+/* Platz schaffen, damit die Leiste den Footer nicht verdeckt */
+body {
+  padding-bottom: calc(var(--call-bar-height) + env(safe-area-inset-bottom));
+}
+
+/* Mit JS: erst nach dem Hero einblenden */
+.js .call-bar {
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform var(--transition),
+    visibility 0s linear 180ms;
+}
+
+.js .call-bar.is-visible {
+  transform: translateY(0);
+  visibility: visible;
+  transition:
+    transform var(--transition),
+    visibility 0s;
+}
+
+@media (min-width: 60em) {
+  .call-bar {
+    display: none;
+  }
+  body {
+    padding-bottom: 0;
+  }
+}

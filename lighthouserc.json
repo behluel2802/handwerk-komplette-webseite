@@ -3,9 +3,11 @@
     "collect": {
       "url": [
         "http://localhost:3000/",
-        "http://localhost:3000/impressum.html",
-        "http://localhost:3000/datenschutz.html",
-        "http://localhost:3000/danke.html"
+        "http://localhost:3000/impressum/",
+        "http://localhost:3000/datenschutz/",
+        "http://localhost:3000/danke/",
+        "http://localhost:3000/leistungen/smart-home/",
+        "http://localhost:3000/404.html"
       ],
       "numberOfRuns": 1,
       "settings": {

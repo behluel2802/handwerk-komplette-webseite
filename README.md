@@ -1,8 +1,8 @@
-# Handwerk Nr. 1 – Website-Vorlage für Handwerksbetriebe
+# Handwerk – komplette Website-Vorlage für Handwerksbetriebe
 
-One-Pager für einen **fiktiven** Elektro-Meisterbetrieb („Elektro Berger GmbH“, Musterstadt). Frontend aus HTML, CSS und Vanilla JS ohne Framework, gebaut mit **Vite** (Partials, Bild-Pipeline, Dateinamen mit Hash). Ein kleines Node.js-Backend liefert die gebaute Seite aus und nimmt die Kontaktanfragen an.
+Mehrseitige Website für einen **fiktiven** Elektro-Meisterbetrieb („Elektro Berger GmbH“, Musterstadt). Frontend aus HTML, CSS und Vanilla JS ohne Framework, gebaut mit **Vite** (Partials, Bild-Pipeline, Dateinamen mit Hash). Ein kleines Node.js-Backend liefert die gebaute Seite aus und nimmt die Kontaktanfragen an.
 
-Demo (ohne Backend, Formular im Demo-Modus): https://behluel2802.github.io/handwerk-nr-eins/
+Öffentliche Demo (GitHub Pages, `noindex`): folgt, sobald Impressum und Datenschutzerklärung final sind.
 
 ## Voraussetzungen
 
@@ -17,9 +17,11 @@ npm install
 | Befehl | Was passiert |
 |---|---|
 | `npm run dev` | Entwicklung: Vite auf **http://localhost:5173** (lädt bei Änderungen sofort neu) + Backend auf :3000. Anfragen an `/api` reicht Vite an das Backend weiter. |
-| `npm run build` | Erzeugt die Bilder und baut die Seite nach `frontend/dist/` |
+| `npm run build` | Erzeugt die Bilder und baut die Seite nach `frontend/dist/` (Vorlage: Rechtsseiten mit Platzhaltern, nicht veröffentlichen) |
+| `npm run build:demo` | Öffentliche Demo: Impressum/Datenschutz mit Betreiberdaten aus `frontend/.env.demo.local` (Vorlage `.env.demo.example`), Formulare senden nichts, Anruf-Buttons wählen nicht, Hinweisleiste, `noindex`. `BASE=/pfad/` für Unterordner |
 | `npm start` | Backend liefert `frontend/dist/` aus → **http://localhost:3000** (wie im Betrieb, vorher `npm run build`) |
-| `npm test` | Tests (Prüfregeln, Kontakt-API, gesperrte Pfade wie `/.env`, Caching, CSP) |
+| `npm test` | Tests (Prüfregeln, Kontakt-API, gesperrte Pfade wie `/.env`, Caching, CSP, Ordner-URLs, Seitengenerator, Demo-Modus) |
+| `npm run lint` / `npm run format` / `npm run typecheck` | ESLint, Prettier, Typprüfung per JSDoc |
 | `npm run images` | Nur Bilder und Icons neu erzeugen (`-- --force` erzeugt alle neu) |
 | `npx @lhci/cli@0.16.0 autorun` | Lighthouse für alle Seiten gegen `npm start` (Konfiguration `lighthouserc.json`) |
 
@@ -30,19 +32,21 @@ Ohne `backend/.env` bzw. ohne `SMTP_HOST` läuft der Mailversand im **Entwicklun
 ```
 package.json               npm-Workspaces (frontend, backend) und gemeinsame Befehle
 frontend/                  Quellen der Website
-  index.html, impressum.html, datenschutz.html, danke.html
+  pages/<url>/index.hbs    Seiten (Handlebars + Front-Matter), Ordner = URL; 404.hbs
+  templates/               Template je Seitentyp (Leistung …)
+  content/<sammlung>/      gleichartige Seiten als Markdown + Front-Matter (Schema in scripts/content.js)
   site.json                Firmendaten (einzige Quelle: Name, Adresse, Telefon, Öffnungszeiten …)
-  partials/                Bausteine (Handlebars): Icon-Sprite, Footer, Kopf der Unterseiten
-  css/tokens.css           Design-Tokens (Farben, Schrift, Abstände)
-  css/base.css             Reset, Typografie, Layout-Helfer, Buttons
-  css/sections.css         Styles der einzelnen Abschnitte
-  js/main.js               Interaktion (Menü, Galerie, Formular, Erreichbarkeit)
+  partials/                layout.hbs, Header, Footer, Formular, Icon-Sprite, legal/ (Rechtstexte Vorlage/Demo)
+  css/main.css             Einstieg: tokens.css, base.css, components/*.css
+  js/main.js               Menü, Header, Anruf-Leiste; lädt lightbox.js, contact-form.js, open-status.js bei Bedarf
   js/hours.js              Öffnungszeiten und Feiertage (konfigurierbar)
   js/validate.js           Prüfregeln fürs Formular (auch vom Backend genutzt)
   partials/picture.hbs     <picture> mit AVIF/WebP/JPG aus der Bild-Pipeline
   img-src/                 Original-Fotos, icon.svg (Favicon-Quelle), CREDITS.md
   images.config.js         Bildsätze: Größen, Formate, Ausschnitte
   scripts/images.js        Bild-Pipeline (sharp): img-src/ → img/ (+ manifest.json) und Icons → public/
+  scripts/pages.js         Seitengenerator (Vite-Plugin): pages/, templates/, content/ → Seiten
+  scripts/env.js           Basispfad, Demo-Schalter, Betreiberdaten
   scripts/site.js          prüft site.json, Template-Helfer und JSON-LD
   scripts/compress.js      legt nach dem Build .br/.gz an (vom Backend ausgeliefert)
   img/, public/*.ico …     erzeugt, nicht im Repo
@@ -53,8 +57,8 @@ backend/                   Node.js-Server (nie öffentlich ausgeliefert)
   contact.js               Rate-Limit, Mailtext, Versand (nodemailer)
   test/                    Tests (node:test)
   .env.example             Vorlage für die Konfiguration
-.github/workflows/pages.yml    Demo-Deploy auf GitHub Pages (baut und veröffentlicht dist/, mit noindex)
-.github/workflows/quality.yml  bei jedem Push: Build, Tests, Lighthouse, axe
+.github/workflows/pages.yml    Demo-Deploy auf GitHub Pages (build:demo, Betreiberdaten aus Repository-Variablen; vorerst nur manuell)
+.github/workflows/quality.yml  bei jedem Push: Lint, Format, Typen, Build, Tests, Lighthouse, axe
 lighthouserc.json              Lighthouse-Schwellen (Barrierefreiheit 100 …)
 docs/BRIEFING.md           Projekt-Briefing und Entscheidungen
 docs/LEITFADEN.md          Leitfaden für neue Projekte (eigenständig, zum Mitnehmen)
@@ -63,7 +67,7 @@ docs/BRIEFING-VORLAGE.md   leeres Briefing für ein neues Projekt
 
 ## Für ein anderes Gewerk anpassen
 
-Schritt für Schritt in [docs/LEITFADEN.md](docs/LEITFADEN.md): Aufbau, empfohlene Reihenfolge, Entscheidungen mit Begründung, Stolpersteine, Checklisten für ein neues Gewerk und fürs Onlinegehen. Kurzfassung: Firmendaten in `frontend/site.json`, Farben in `frontend/css/tokens.css`, Texte in `frontend/index.html`, Fotos über `frontend/images.config.js`. Für ein neues Projekt `docs/BRIEFING-VORLAGE.md` nach `docs/BRIEFING.md` kopieren.
+Schritt für Schritt in [docs/LEITFADEN.md](docs/LEITFADEN.md): Aufbau, empfohlene Reihenfolge, Entscheidungen mit Begründung, Stolpersteine, Checklisten für ein neues Gewerk und fürs Onlinegehen. Kurzfassung: Firmendaten in `frontend/site.json`, Farben in `frontend/css/tokens.css`, Texte in `frontend/pages/` und `frontend/content/`, Fotos über `frontend/images.config.js`. Für ein neues Projekt `docs/BRIEFING-VORLAGE.md` nach `docs/BRIEFING.md` kopieren.
 
 ## Hinweise
 

@@ -1,0 +1,25 @@
+/* ==========================================================================
+   Einstieg für alle Styles. Vite fasst die Dateien beim Build zu einem Bundle zusammen.
+   Reihenfolge: Tokens → Basis → Komponenten (Reihenfolge der Komponenten = Kaskade, nicht ändern ohne Grund).
+   ========================================================================== */
+
+@import './tokens.css';
+@import './base.css';
+
+@import './components/demo-bar.css';
+@import './components/header.css';
+@import './components/hero.css';
+@import './components/trust.css';
+@import './components/services.css';
+@import './components/gallery.css';
+@import './components/reviews.css';
+@import './components/about.css';
+@import './components/steps.css';
+@import './components/cta-box.css';
+@import './components/career.css';
+@import './components/contact.css';
+@import './components/form.css';
+@import './components/lightbox.css';
+@import './components/footer.css';
+@import './components/legal.css';
+@import './components/call-bar.css';

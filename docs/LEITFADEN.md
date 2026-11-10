@@ -48,25 +48,28 @@ Dazu: Impressum, Datenschutz, Danke-Seite (Formular ohne JS), feste Anruf-Leiste
 ```
 package.json            npm-Workspaces (frontend, backend), gemeinsame Befehle
 frontend/               Quellen
-  index.html …          Seiten (Handlebars-Templates)
+  pages/<url>/index.hbs Seiten (Handlebars + Front-Matter), Ordner = URL; pages/404.hbs
+  templates/            Template je Seitentyp (z. B. leistung.hbs)
+  content/<sammlung>/   gleichartige Seiten als Markdown mit Front-Matter (Schema-geprüft)
   site.json             Firmendaten – einzige Quelle
-  partials/             Icon-Sprite, Footer, Kopf der Unterseiten, <picture>, Favicons
-  css/tokens.css        Design-Tokens (nur Variablen)
-  css/base.css          Reset, Typografie, Layout-Helfer, Buttons
-  css/sections.css      Abschnitte
-  js/main.js            Menü, Lightbox, Formular, Erreichbarkeit
+  partials/             layout.hbs (Kopf, Header, Footer), Icon-Sprite, <picture>, Formular, legal/ (Rechtstexte)
+  css/main.css          Einstieg, bindet tokens.css, base.css und components/*.css ein
+  css/components/       eine Datei je Komponente (Header, Hero, Formular …)
+  js/main.js            Menü, Header, Anruf-Leiste; lädt Lightbox, Formular, Erreichbarkeit nur bei Bedarf
   js/hours.js           Öffnungszeiten + Feiertage (reine Funktionen, testbar)
   js/validate.js        Prüfregeln Formular (auch im Backend genutzt)
   img-src/              Original-Fotos, icon.svg, CREDITS.md
   images.config.js      Bildsätze: Breiten, Seitenverhältnis, Ausschnitt
-  scripts/              images.js (sharp), site.js (Daten prüfen, Helfer, JSON-LD), compress.js
+  scripts/              pages.js (Seitengenerator, Vite-Plugin), content.js + schema.js (Sammlungen), env.js
+                        (Basispfad, Demo-Schalter, Betreiberdaten), images.js (sharp), site.js, credits.js, compress.js
+  test/                 Tests für Generator und Demo-Modus
   vite.config.js        Build
   dist/                 gebaut – nur dieser Ordner ist öffentlich
 backend/                Node-Server: liefert dist/ aus, POST /api/kontakt
 .github/workflows/      pages.yml (Demo), quality.yml (Lighthouse + axe bei jedem Push)
 ```
 
-**Befehle:** `npm run dev` (Vite :5173 + Backend :3000), `npm run build`, `npm start` (Backend liefert `dist/` aus), `npm test`, `npm run images`.
+**Befehle:** `npm run dev` (Vite :5173 + Backend :3000), `npm run build`, `npm run build:demo` (öffentliche Demo), `npm start` (Backend liefert `dist/` aus), `npm test`, `npm run lint`, `npm run format`, `npm run typecheck`, `npm run images`.
 
 ## 3. Schnellstart
 
@@ -106,7 +109,10 @@ Für ein neues Projekt **von Grund auf**. Die Vorlage ist so entstanden, aber mi
 | **One-Pager** mit Ankern | Zielgruppe will schnell anrufen, nicht navigieren; ein Scrollweg, mobil ideal | Mehrseitig (lohnt erst bei vielen Leistungen/SEO je Leistung) |
 | **HTML/CSS/Vanilla JS**, kein Framework | Wenig Interaktion, maximale Ladegeschwindigkeit, lange wartbar ohne Updates | React/Vue/Astro (Overhead ohne Nutzen für diese Größe) |
 | **Vite** als Build | Partials gegen Duplikate (Kopf, Footer), Dateinamen mit Hash (dauerhaft cachebar), CSS zusammengefasst, Lighthouse misst das echte Ergebnis | Kein Build (Footer in jeder Seite kopiert), eigener Build mit Skripten |
-| **Handlebars-Partials** (`vite-plugin-handlebars`) | etabliert, Parameter möglich (`{{> picture name=… }}`) | eigenes Vite-Plugin |
+| **Eigenes Vite-Plugin mit Handlebars** (Seiten aus Ordnern, Layout, Content-Sammlungen) | ein Layout für alle Seiten, gleichartige Seiten aus Daten, Seitenliste entsteht automatisch; Vite verarbeitet die Seiten trotzdem wie echte HTML-Dateien (Hash, Bild-Pipeline, CSP) | `vite-plugin-handlebars` (kein Layout, keine erzeugten Seiten), Eleventy (Bild-Pipeline und Build müssten umgebaut werden), Seiten von Hand kopieren |
+| **Eigene kleine Schema-Prüfung** für Content-Dateien | deutsche Fehlermeldungen mit Datei und Feld, unbekannte Felder (Tippfehler) brechen ab, keine Abhängigkeit | ajv/JSON Schema (zu groß für drei Seitentypen) |
+| **Seitenabhängiges JS per `import()`**, nur wenn das Element auf der Seite steht | keine Konfiguration je Seite, Vite teilt automatisch auf | ein großes Bundle, Skript-Liste je Seite |
+| **Demo-Schalter beim Build** statt Erkennung zur Laufzeit | die Demo sendet garantiert nichts (Versand-Code fehlt im Bundle), noindex/Hinweise/Rechtstexte aus einer Quelle | „Kein Backend → Demo-Bestätigung“ (schickt die Daten trotzdem an den Host und täuscht bei echten Betrieben einen Versand vor) |
 | **`site.json`** als einzige Quelle der Firmendaten, Kontext `site` | NAP (Name, Adresse, Telefon) muss überall gleich sein – Text, Footer, JSON-LD, Google-Profil. Ein Gewerkwechsel ändert eine Datei. JSON ist ohne Zusatzpaket in Vite, Node und Tests lesbar. Build bricht bei fehlenden Pflichtfeldern ab. | Werte im HTML (stand an ~85 Stellen), JS-Konfigurationsdatei, YAML (Parser nötig) |
 | **Nur Stammdaten** in `site.json`, Fließtext bleibt im HTML | Platzhalter mitten im Text sind schwer zu lesen und zu redigieren | Alles in Daten (Leistungen, Stimmen) – lohnt erst mit CMS |
 | **Fehlende Werte `null`** → Text ohne Link + Build-Warnung | `href="#"` ist ein toter Link (Barrierefreiheit, SEO) | `#` mit TODO-Kommentar |
@@ -143,7 +149,7 @@ Für ein neues Projekt **von Grund auf**. Die Vorlage ist so entstanden, aber mi
 | **AVIF zusätzlich** zu WebP/JPG | deutlich kleinere Bilder | nur WebP |
 | **Kein Web-App-Manifest, kein kritisches CSS inline** | kein Nutzen für eine Visitenkarten-Seite; CSS ist klein genug | – |
 | **Qualitäts-Workflow** bei jedem Push: Build, Tests, Lighthouse (Barrierefreiheit 100), axe (WCAG 2.2 AA) | Rückschritte fallen sofort auf | nur manuell prüfen |
-| **Demo mit `noindex`**, nur in der veröffentlichten Kopie | Demo-Inhalte nicht in Suchmaschinen, Quellen bleiben sauber | `noindex` im Quellcode |
+| **Demo mit `noindex`** über den Demo-Schalter im Layout | Demo-Inhalte nicht in Suchmaschinen, erfasst auch Seiten in Unterordnern | `sed` im Deploy-Workflow (traf nur die oberste Ordnerebene) |
 
 ## 6. Stolpersteine
 
@@ -165,7 +171,11 @@ Jeweils **Symptom → Ursache → Lösung**.
 
 **Build und Auslieferung**
 - **Hero ohne Foto, nur auf dem eigenen Server** → Backend kennt `.avif` nicht (404) → jeder Dateityp braucht einen `MIME`-Eintrag; ein Test prüft, dass jede Endung aus `dist/` ausgeliefert wird.
-- **Demo auf GitHub Pages ohne CSS/JS** → absolute Pfade, Pages läuft im Unterordner `/<repo>/` → Vite `base: './'`.
+- **Demo auf GitHub Pages ohne CSS/JS** → absolute Pfade, Pages läuft im Unterordner `/<repo>/` → Basispfad konfigurierbar machen (`BASE=/<repo>/` → Vite `base`), interne Links über einen Helfer (`{{url "/kontakt/"}}`). `base: './'` reicht nur für Seiten in derselben Ordnerebene.
+- **Mehrseitig: Bilder/CSS fehlen auf Unterseiten** → relative Pfade (`img/…`) werden ab `/leistungen/x/` aufgelöst → Assets absolut ab Wurzel (`/img/…`); Vite ergänzt beim Build den Basispfad, auch für Dateien aus `public/`.
+- **Erzeugte Seiten in Vite einspeisen** → Vite erwartet HTML-Dateien als Einstieg → virtuelle Einstiege: `build.rollupOptions.input` zeigt auf (nicht existierende) Pfade wie `frontend/kontakt/index.html`, das Plugin beantwortet `resolveId`/`load` mit dem gerenderten HTML; im Dev-Server eine Middleware vor den Vite-Middlewares plus `server.transformIndexHtml`.
+- **Handlebars `strict: true` wirft bei optionalen Feldern** (`{{#if page.faq}}`) → nicht-strikt rendern, Pflichtfelder stattdessen per Schema prüfen.
+- **TypeScript-Typprüfung meldet hunderte `any`-Fehler** → neuere TypeScript-Versionen sind standardmäßig `strict` → für JSDoc-geprüften JS-Code `"strict": false` setzen, echte Typfehler bleiben sichtbar.
 - **Lightbox zeigt Bild nicht nach dem Build** → Vite verarbeitet nur bekannte Attribute → `html.additionalAssetSources` für `<a href>` und `data-full`.
 - **Kleine Bilder fehlen als Datei** → Vite bettet kleine Assets als `data:`-URI ein → `assetsInlineLimit: 0`.
 - **`og:image` zeigt ins Leere** → Bilder bekommen im Build einen Hash, `og:image` braucht eine feste, absolute URL → eigenes Vorschaubild in `frontend/public/` (fester Name), URL erst mit echter Domain.
@@ -174,7 +184,9 @@ Jeweils **Symptom → Ursache → Lösung**.
 - **Bild-Pipeline erzeugt alles neu** → Prüfung nach Dateidatum → Fingerabdruck aus Original + Einstellungen; im CI Bilder zwischenspeichern (`actions/cache`).
 
 **Formular und Backend**
-- **Formular auf statischem Hosting tot** → kein Backend unter `/api/kontakt` → bei 404/405/501 Demo-Modus: gleiche Bestätigung mit Hinweis „Demo-Version“.
+- **Formular auf statischem Hosting tot** → kein Backend unter `/api/kontakt` → Fehlermeldung mit Telefonnummer zeigen, **nie** eine Bestätigung ohne Versand. Für eine öffentliche Demo stattdessen beim Build einen Demo-Modus setzen, der gar nicht erst sendet.
+- **Demo-Formular sendet ohne JS doch** → ein ausgeblendeter Submit-Button genügt nicht → ohne `action`, Button als `type="button"` (erst JS macht ihn zum Absende-Button); bei mehreren Textfeldern gibt es dann auch kein implizites Absenden per Enter.
+- **Fehlerseite ohne JS ungestylt** → von Hand im Backend gebautes HTML verweist auf CSS-Dateien, die es nach dem Bundling nicht mehr gibt → Fehlerseite als normale Seite bauen, das Backend setzt nur die Meldung zwischen zwei Kommentar-Markierungen ein.
 - **Header-Injection im Betreff** → Zeilenumbrüche im Namen → beim Prüfen entfernen (Test vorhanden).
 - **IP-Adresse fürs Rate-Limit hinter Reverse Proxy immer gleich** → Proxy-IP statt Kunden-IP → `TRUST_PROXY=1` setzen (nur hinter einem Proxy!).
 - **HSTS lokal gesetzt** → Browser erzwingt danach HTTPS auf localhost → HSTS erst auf dem echten Server mit HTTPS.
@@ -189,12 +201,12 @@ Jeweils **Symptom → Ursache → Lösung**.
 - [ ] `frontend/site.json`: alle Felder ersetzen. `schemaType` passend wählen (`Electrician`, `Plumber`, `HVACBusiness`, `HousePainter`, `RoofingContractor`, `GeneralContractor`, `Locksmith`, `AutoRepair`, sonst `HomeAndConstructionBusiness`). Unbekannte Links als `null`.
 - [ ] `hours`: Zeiten, Bundesland (`state`, z. B. `BY`, `NW`, `HE`), Zusatz-Schließtage. Feiertage werden berechnet.
 - [ ] `css/tokens.css`, Block „Marke“: Haupt- und Akzentfarbe, dazu „Text auf …“-Farben. Kontraste prüfen (≥ 4,5 : 1 für Text, ≥ 3 : 1 für Rahmen/Icons).
-- [ ] `meta name="theme-color"` in allen Seiten an die Hauptfarbe anpassen.
+- [ ] `meta name="theme-color"` in `partials/layout.hbs` an die Hauptfarbe anpassen.
 - [ ] `img-src/icon.svg`: Symbol und Farben (daraus entstehen Favicon und App-Icon).
 - [ ] Icon im Logo (`#i-bolt`) im Sprite `partials/sprite.hbs` ersetzen.
 - [ ] Paketnamen in `frontend/package.json` und `backend/package.json`, Absender/Empfänger in `backend/.env.example`, Titel im README.
 
-**Inhalte (`frontend/index.html`)**
+**Inhalte (`frontend/pages/index.hbs`, Leistungen in `frontend/content/`)**
 - [ ] Hero: Untertitel, 3 Versprechen – nur was der Betrieb wirklich zusagt.
 - [ ] Vertrauensleiste: 4 Punkte, passend zum Gewerk (z. B. Meisterbetrieb, Fachbetrieb nach …, Notdienst nur wenn vorhanden).
 - [ ] Leistungen: 6 Karten, Icons im Sprite ergänzen (Linien-Icons, `stroke="currentColor"`). Gleiche Leistungen als Chips im Formular und in `js/validate.js` (erlaubte Anliegen).
@@ -239,8 +251,10 @@ Jeweils **Symptom → Ursache → Lösung**.
 - [ ] Optional JSON-LD `JobPosting` je Stelle – nur mit echten Daten (Ort, Datum, Anstellungsart).
 
 **Öffentliche Demo mit fiktivem Betrieb** (z. B. GitHub Pages als Portfolio)
-- [ ] Impressum nennt den **echten Betreiber** (Name, ladungsfähige Anschrift, E-Mail) und erklärt, dass der Betrieb fiktiv ist – ein fiktives Impressum erfüllt § 5 DDG nicht. Betreiberdaten nicht ins Repo (Git-Historie), sondern per Umgebungsvariable in den Build.
-- [ ] Datenschutzerklärung für den Demo-Host (Logs, ggf. USA-Übermittlung).
+- [ ] Impressum nennt den **echten Betreiber** (Name, ladungsfähige Anschrift, E-Mail **und** Telefon) und erklärt, dass der Betrieb fiktiv ist – ein fiktives Impressum erfüllt § 5 DDG nicht. Neben der E-Mail ist ein zweiter schneller Kontaktweg nötig (EuGH C-298/07); ein Formular, das in der Demo nichts sendet, zählt nicht. Postfach reicht als Anschrift nicht. Betreiberdaten nicht ins Repo (Git-Historie), sondern per Umgebungsvariable in den Build; fehlt ein Wert, bricht der Build ab.
+- [ ] Bildnachweise im Impressum (aus der Credits-Datei erzeugt), Stockfotos nicht als eigene Arbeiten ausgeben.
+- [ ] Keinen Link zur EU-OS-Plattform mehr (seit 20.07.2025 eingestellt); VSBG-Hinweis nur für echte Betriebe (Pflicht ab mehr als 10 Beschäftigten).
+- [ ] Datenschutzerklärung für den Demo-Host (Logs, ggf. USA-Übermittlung, z. B. GitHub: Data Privacy Framework), keine Cookies/Speicherung (§ 25 TDDDG), Formulare senden nichts, Rechte inkl. Beschwerderecht mit der Aufsichtsbehörde des Bundeslands, Stand. Mit einem Generator abgleichen.
 - [ ] Formulare senden in der Demo **gar nichts** (auch nicht an den Host, der mit 404/405 antwortet), Anruf-Links wählen keine fiktiven Nummern.
 - [ ] Sichtbarer Hinweis „Demo / fiktiver Betrieb“ auf allen Seiten, `noindex`.
 

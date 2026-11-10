@@ -105,11 +105,11 @@ Arbeitsweise: Vor jedem Schritt stellt Claude den Plan vor (mit nummerierten Ent
 
 | # | Schritt | Status |
 |---|---|---|
-| P1 | Briefing und `CLAUDE.md` auf mehrseitig umstellen (Sitemap, Grundsatzentscheidungen), HTTPS-Punkt im Leitfaden (der Leitfaden selbst wird in P7 auf mehrseitig erweitert) | ✅ erledigt (08.11.2026), nicht committet |
-| P2 | Architektur: Layout-Partial (Header, Navigation, Anruf-Leiste, Footer) für alle Seiten, konfigurierbarer Basispfad, Content-Dateien (JSON/Front-Matter + Markdown) mit Schema-Prüfung, Seitengenerierung je Seitentyp per Vite-Plugin, Ordner-URLs, 404-Seite, CSS in Komponenten-Dateien, JS-Module (Lightbox nur wo nötig), Backend + Tests anpassen, ESLint/Prettier; Demo-Schalter `DEMO` und Betreiberdaten aus Umgebungsvariablen (R1, R6, R7, R8, R11) | **nächster Schritt**: Plan vorstellen |
-| P3 | Navigation: Aufklappmenü „Leistungen“, Breadcrumbs, aktiver Zustand, Footer-Sitemap; Demo-Hinweisleiste (R5) | offen |
+| P1 | Briefing und `CLAUDE.md` auf mehrseitig umstellen (Sitemap, Grundsatzentscheidungen), HTTPS-Punkt im Leitfaden (der Leitfaden selbst wird in P7 auf mehrseitig erweitert) | ✅ erledigt (08.11.2026), committet am 10.11.2026 |
+| P2 | Architektur: Layout-Partial (Header, Navigation, Anruf-Leiste, Footer) für alle Seiten, konfigurierbarer Basispfad, Content-Dateien (JSON/Front-Matter + Markdown) mit Schema-Prüfung, Seitengenerierung je Seitentyp per Vite-Plugin, Ordner-URLs, 404-Seite, CSS in Komponenten-Dateien, JS-Module (Lightbox nur wo nötig), Backend + Tests anpassen, ESLint/Prettier; Demo-Schalter `DEMO` und Betreiberdaten aus Umgebungsvariablen (R1, R6, R7, R8, R11); vorgezogen, damit die Demo von Anfang an rechtssicher ist: Hinweisleiste (R5), Demo-Impressum (R2), Demo-Datenschutzerklärung (R10), Bildnachweise (R12) | ✅ umgesetzt (10.11.2026), nicht committet (außer ESLint/Prettier-Commit) |
+| P3 | Navigation: Aufklappmenü „Leistungen“, Breadcrumbs, aktiver Zustand, Footer-Sitemap | **nächster Schritt**: Plan vorstellen |
 | P4 | Templates je Seitentyp (Leistung, Stelle, Übersicht, Projekt) mit je einer Beispielseite; Unterseiten-Hero, FAQ-Akkordeon, „Weitere Leistungen“, CTA-Box | offen |
-| P5 | Inhalte und Fotos aller Seiten (Texte, FAQ, Stellen, Referenzen, Startseite auf Teaser umbauen), Bewerber-Rückruf-Endpunkt; Demo-Impressum, Demo-Datenschutzerklärung, Bildnachweise (R2, R10, R12) | offen |
+| P5 | Inhalte und Fotos aller Seiten (Texte, FAQ, Stellen, Referenzen, Startseite auf Teaser umbauen), Bewerber-Rückruf-Endpunkt (Demo-Fassung: sendet nichts); Datenschutzerklärung um neue Formulare ergänzen | offen |
 | P6 | Technisches SEO: `sitemap.xml`, `robots.txt`, `canonical`, `og:*`, JSON-LD (`BreadcrumbList`, `Service`, `JobPosting`) – alles aus `site.url` erzeugt | offen |
 | P7 | Qualität: Build-Tests (Links/Anker, Sitemap vollständig, Titel/Beschreibung/canonical/eine h1 je Seite), Lighthouse/axe für alle Seiten (URL-Liste automatisch), GitHub-Pages-Demo fürs neue Repo (erst online, wenn Impressum und Datenschutz final sind), Leitfaden ergänzen inkl. Rechts-Checkliste für echte Betriebe (R14) | offen |
 | 14 | Deployment (aus Phase 1, weiter zurückgestellt), inkl. HTTPS | zurückgestellt |
@@ -142,14 +142,32 @@ Arbeitsweise: Vor jedem Schritt stellt Claude den Plan vor (mit nummerierten Ent
 - T4: Backend bleibt `node:http` + nodemailer; neu: Bewerber-Rückruf-Endpunkt, echte 404-Seite
 - T5: ESLint + Prettier
 
+#### Schritt P2 (Plan freigegeben, umgesetzt am 10.11.2026)
+
+Vorgabe des Entwicklers: Demo von Anfang an rechtssicher für Deutschland; kein Anschriften-Service (R3). Alle Vorschläge 1–10 aus dem Plan freigegeben.
+
+1. **Seitengenerator** `frontend/scripts/pages.js` (eigenes Vite-Plugin, ersetzt `vite-plugin-handlebars`): Seiten in `pages/<url>/index.hbs` mit Front-Matter (Schema-geprüft), Templates je Seitentyp in `templates/`, Layout `partials/layout.hbs`. Im Build virtuelle HTML-Einstiege (`resolveId`/`load`), im Dev-Server Middleware mit Neuladen bei Änderungen, `/pfad` → 301 `/pfad/`, 404-Seite. Die Seitenliste in `vite.config.js` entfällt.
+2. **Content-Sammlungen** `frontend/scripts/content.js` + `scripts/schema.js` (eigene kleine Prüfung, unbekannte Felder sind Fehler, Icons und Anliegen gegen Sprite bzw. `validate.js` geprüft), Markdown per `markdown-it`/`gray-matter`. Beispiel: `content/leistungen/smart-home.md` → `/leistungen/smart-home/` (schlichtes Template, ausgebaut in P4).
+3. **Basispfad** `BASE` (Standard `/`), Helfer `{{url}}`; Assets absolut, Vite ergänzt den Basispfad (auch für `public/`).
+4. **Typprüfung** per JSDoc, `npm run typecheck` (`tsc --checkJs`, `strict: false`, nur `frontend/scripts`).
+5. **CSS** in 17 Komponenten-Dateien (`css/components/`), Einstieg `css/main.css`; Inhalt zeilengenau aus `sections.css` übernommen.
+6. **JS**: `main.js` (alle Seiten) + `lightbox.js`, `contact-form.js`, `open-status.js` per `import()` nur bei Bedarf.
+7. **Demo-Schalter** (Vite-Modus `demo`, `npm run build:demo`, `scripts/env.js`): Betreiberdaten `OPERATOR_*` aus Umgebungsvariablen (lokal `frontend/.env.demo.local`, Vorlage `.env.demo.example`; GitHub Repository-Variablen), Build bricht bei fehlenden Werten ab. Demo: Hinweisleiste, `noindex` überall, Formulare ohne `action` und ohne Absende-Button ohne JS, `__DEMO__` entfernt den Versand-Code aus dem Bundle, Anruf-Buttons → `/impressum/#demo`, Rechtsseiten in Demo-Fassung (R2, R10) mit Aufsichtsbehörde nach Bundesland, Bildnachweise aus `CREDITS.md` (R12, auch in der Vorlage). Vorlage-Build warnt bei Platzhaltern in Rechtsseiten.
+8. **Formular ohne Backend** zeigt jetzt einen Fehler statt einer Demo-Bestätigung (revidiert den Demo-Modus aus Schritt 12b: eine Bestätigung ohne Versand wäre bei einem echten Betrieb irreführend).
+9. **Backend**: Ordner-URLs, 301 ohne Schrägstrich, gebaute 404-Seite, CSP-Hashes aller Seiten (rekursiv), Weiterleitung auf `/danke/`, Fehlerseite ohne JS aus dem Build (`/anfrage-fehler/`, verwies vorher auf nicht mehr vorhandene CSS-Dateien).
+10. **ESLint + Prettier** (eigener Commit `2cfbb7c`), im Workflow „Qualität“ zusammen mit `typecheck`. Workflow „Demo auf GitHub Pages“ baut `build:demo`, prüft `noindex` auf allen Seiten, läuft bis P7 nur manuell (R13).
+
+Ergebnis: Startseite pixelgleich (mobil), Unterseiten mit vollem Layout. Lighthouse lokal auf allen 6 Seiten Barrierefreiheit und Best Practices 100 (normal und Demo), SEO 100 auf indexierbaren Seiten. 51 Tests (44 Backend, 7 Frontend inkl. Demo-Absicherung).
+
 #### Öffentliche Demo rechtssicher (freigegeben am 08.11.2026)
 
 Anlass: Ein Impressum mit fiktiven Daten erfüllt § 5 DDG nicht; verantwortlich ist der tatsächliche Betreiber (der Entwickler). Außerdem schickte der Demo-Modus die Formulardaten an den Host (Bestätigung erst nach der 405-Antwort).
 
 - **R1** Betreiberdaten (Name, ladungsfähige Anschrift, E-Mail, optional Telefon, Bundesland für die Aufsichtsbehörde) **nie ins Repo**: im Demo-Build aus Umgebungsvariablen (GitHub-Actions-Variablen bzw. lokal eine Datei, die auf `.gitignore` steht). Fehlen sie, bricht der Demo-Build ab.
 - **R2** Demo-Impressum: Betreiber + Satz „Elektro Berger GmbH ist ein fiktiver Betrieb. Alle Firmendaten, Kundenstimmen und Bewertungen sind erfunden. Diese Website ist ein Übungs- und Demonstrationsprojekt.“ Ohne Register/USt-IdNr./Kammer.
-- **R3** Anschriften-Service (c/o) optional, Entscheidung beim Entwickler (offen). Postfach reicht nicht.
+- **R3** Anschriften-Service (c/o): **entschieden am 10.11.2026: nein**. Im Impressum steht die eigene ladungsfähige Anschrift des Betreibers (Postfach reicht nicht).
 - **R4** eigene Alias-Adresse für das Impressum.
+- **R4a** (10.11.2026) Telefon des Betreibers ist Pflicht: § 5 Abs. 1 Nr. 2 DDG verlangt neben der E-Mail einen zweiten schnellen, unmittelbaren Kontaktweg (EuGH C-298/07); das Demo-Formular sendet nichts und fällt dafür aus. Eine separate Nummer (z. B. VoIP) genügt.
 - **R5** statische Hinweisleiste oben auf allen Seiten (nicht wegklickbar, kein Speicher, kein `role="alert"`): „Demo-Projekt: Elektro Berger ist ein fiktiver Betrieb. Anfragen werden nicht versendet. Betreiber und Impressum“. Revidiert Entscheidung 3 aus Schritt 12b.
 - **R6** Build-Schalter `DEMO`: Formulare senden **keinen** Request, Demo-Bestätigung direkt; ohne JS Hinweis statt Absende-Button.
 - **R7** Anruf-Buttons bleiben sichtbar, wählen in der Demo aber nicht (Hinweis „Demo: fiktive Nummer“). `mailto:` an `.example` bleibt.
@@ -477,8 +495,10 @@ Umgesetzt: Leitfaden mit 9 Abschnitten (zusätzlich „Aufbau im Überblick“),
 
 ## 9. Offene Punkte
 
-- Phase 2: nächster Schritt P2 (Architektur), Plan vorstellen
-- R3: Anschriften-Service ja/nein (Entwickler); R13 erledigt (Pages + Workflow in beiden Repos aus); dieselben Demo-Punkte werden auch im Template-Repo `handwerk-nr-eins` umgesetzt
+- Phase 2: nächster Schritt P3 (Navigation), Plan vorstellen
+- Vor dem ersten Demo-Deploy (P7): Betreiberdaten als Repository-Variablen anlegen, Demo-Datenschutzerklärung mit einem Generator und den aktuellen Angaben von GitHub abgleichen (R10), Impressum gegenlesen
+- R13 erledigt (Pages + Workflow in beiden Repos aus); dieselben Demo-Punkte werden auch im Template-Repo `handwerk-nr-eins` umgesetzt
+- Restrisiko Firmenname: „Elektro Berger“ kann es real geben. Bleibt laut R8; Absicherung über Hinweisleiste, Demo-Hinweis im Impressum und `noindex`
 - Referenzen: ob Projektseiten `/referenzen/<projekt>/` kommen, wird in P5 entschieden
 - Einzugsgebiet: Abschnitt auf Kontakt- oder Über-uns-Seite (keine Ortsseiten), Platzierung in P5
 - Schritt 14 (Deployment) zurückgestellt, Checkliste in `docs/LEITFADEN.md` Abschnitt 8
