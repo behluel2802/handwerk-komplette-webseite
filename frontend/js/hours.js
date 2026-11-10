@@ -4,8 +4,7 @@
 import site from '../site.json' with { type: 'json' };
 
 // Wochentag (0 = So … 6 = Sa) → [von, bis]; fehlende Tage = geschlossen
-const byWeekday = (week) =>
-  Object.fromEntries(week.flatMap(({ days, from, to }) => days.map((d) => [d, [from, to]])));
+const byWeekday = (week) => Object.fromEntries(week.flatMap(({ days, from, to }) => days.map((d) => [d, [from, to]])));
 
 export const CONFIG = {
   timeZone: site.hours.timeZone,
@@ -66,7 +65,7 @@ export function holidays(year, state = CONFIG.state) {
   if (only('SN')) {
     // Buß- und Bettag: Mittwoch vor dem 23. November
     const nov23 = new Date(Date.UTC(year, 10, 23));
-    const back = ((nov23.getUTCDay() - 3 + 7) % 7) || 7;
+    const back = (nov23.getUTCDay() - 3 + 7) % 7 || 7;
     list.push([isoOf(shift(nov23, -back)), 'Buß- und Bettag']);
   }
 
@@ -77,15 +76,24 @@ export function holidays(year, state = CONFIG.state) {
 function localParts(now, timeZone) {
   const parts = Object.fromEntries(
     new Intl.DateTimeFormat('en-GB', {
-      timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
-    }).formatToParts(now).map((p) => [p.type, p.value]),
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    })
+      .formatToParts(now)
+      .map((p) => [p.type, p.value]),
   );
   const y = Number(parts.year);
   const m = Number(parts.month);
   const d = Number(parts.day);
   return {
-    y, m, d,
+    y,
+    m,
+    d,
     weekday: new Date(Date.UTC(y, m - 1, d)).getUTCDay(),
     minutes: Number(parts.hour) * 60 + Number(parts.minute),
   };

@@ -20,19 +20,26 @@ const manifestFile = path.join(outDir, 'manifest.json');
 const force = process.argv.includes('--force');
 const VERSION = 1; // erhöhen, wenn sich die Verarbeitung in diesem Skript ändert
 
-const exists = (file) => stat(file).then(() => true, () => false);
+const exists = (file) =>
+  stat(file).then(
+    () => true,
+    () => false,
+  );
 const fingerprint = (...parts) => {
   const hash = createHash('sha256');
-  for (const part of parts) hash.update(typeof part === 'string' ? part : Buffer.isBuffer(part) ? part : JSON.stringify(part));
+  for (const part of parts)
+    hash.update(typeof part === 'string' ? part : Buffer.isBuffer(part) ? part : JSON.stringify(part));
   return hash.digest('hex').slice(0, 16);
 };
 
 /** Führt Aufgaben mit begrenzter Parallelität aus */
 async function pool(tasks, limit = availableParallelism()) {
   const queue = [...tasks];
-  await Promise.all(Array.from({ length: Math.min(limit, queue.length) }, async () => {
-    while (queue.length) await queue.shift()();
-  }));
+  await Promise.all(
+    Array.from({ length: Math.min(limit, queue.length) }, async () => {
+      while (queue.length) await queue.shift()();
+    }),
+  );
 }
 
 /** Ausschnitt im Original für ein Seitenverhältnis, verschoben entlang der überstehenden Achse */
@@ -55,7 +62,9 @@ async function plan(image) {
   for (const [setName, set] of Object.entries(image.sets)) {
     const crop = set.aspect ? cropBox(srcW, srcH, set.aspect, set.focus) : null;
     const [baseW, baseH] = crop ? [crop.width, crop.height] : [srcW, srcH];
-    const widths = set.max ? [Math.min(baseW, Math.round(baseW * Math.min(1, set.max / Math.max(baseW, baseH))))] : set.widths;
+    const widths = set.max
+      ? [Math.min(baseW, Math.round(baseW * Math.min(1, set.max / Math.max(baseW, baseH))))]
+      : set.widths;
     sets[setName] = widths.map((w) => {
       const width = Math.min(w, baseW); // nie vergrößern
       return { file: `${image.name}-${setName}-${width}`, width, height: Math.round((baseH * width) / baseW), crop };
@@ -69,7 +78,9 @@ async function render(image, out, format, target) {
   if (out.crop) pipeline = pipeline.extract(out.crop);
   if (image.flop) pipeline = pipeline.flop();
   pipeline = pipeline.resize({ width: out.width, height: out.height });
-  pipeline = { avif: (p) => p.avif(formats.avif), webp: (p) => p.webp(formats.webp), jpg: (p) => p.jpeg(formats.jpg) }[format](pipeline);
+  pipeline = { avif: (p) => p.avif(formats.avif), webp: (p) => p.webp(formats.webp), jpg: (p) => p.jpeg(formats.jpg) }[
+    format
+  ](pipeline);
   await pipeline.toFile(target);
 }
 
@@ -97,9 +108,11 @@ async function renderIcons(previousKey) {
 
   const outputs = {
     'icon.svg': () => copyFile(source, path.join(publicDir, 'icon.svg')),
-    'favicon.ico': async () => writeFile(path.join(publicDir, 'favicon.ico'), pngToIco(await raster(32).png().toBuffer(), 32)),
+    'favicon.ico': async () =>
+      writeFile(path.join(publicDir, 'favicon.ico'), pngToIco(await raster(32).png().toBuffer(), 32)),
     // iOS rundet die Ecken selbst ab und zeigt Transparenz schwarz: vollflächig mit Hintergrundfarbe
-    'apple-touch-icon.png': () => raster(180).flatten({ background }).png().toFile(path.join(publicDir, 'apple-touch-icon.png')),
+    'apple-touch-icon.png': () =>
+      raster(180).flatten({ background }).png().toFile(path.join(publicDir, 'apple-touch-icon.png')),
   };
   let created = 0;
   for (const [file, make] of Object.entries(outputs)) {
@@ -154,5 +167,10 @@ for (const file of await readdir(outDir)) {
 
 const icons = await renderIcons(previous.keys?.[`icon:${icon}`]);
 keys[`icon:${icon}`] = icons.key;
-await writeFile(manifestFile, `${JSON.stringify({ formats: Object.keys(formats), keys, images: manifest }, null, 2)}\n`);
-console.info(`[images] ${expected.size - 1} Bilder (${tasks.length} neu, ${removed} entfernt), Icons: ${icons.created} neu`);
+await writeFile(
+  manifestFile,
+  `${JSON.stringify({ formats: Object.keys(formats), keys, images: manifest }, null, 2)}\n`,
+);
+console.info(
+  `[images] ${expected.size - 1} Bilder (${tasks.length} neu, ${removed} entfernt), Icons: ${icons.created} neu`,
+);

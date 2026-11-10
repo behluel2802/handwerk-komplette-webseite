@@ -69,7 +69,9 @@ export function createSender(env = process.env) {
       mode: 'dev',
       async send(data) {
         const { subject, text } = formatMail(data);
-        console.info(`\n[kontakt:dev] Kein SMTP_HOST gesetzt – Anfrage wird nur angezeigt:\nBetreff: ${subject}\n${text}\n`);
+        console.info(
+          `\n[kontakt:dev] Kein SMTP_HOST gesetzt – Anfrage wird nur angezeigt:\nBetreff: ${subject}\n${text}\n`,
+        );
       },
     };
   }

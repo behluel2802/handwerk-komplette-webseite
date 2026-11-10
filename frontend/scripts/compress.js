@@ -23,11 +23,15 @@ for (const entry of await readdir(dist, { recursive: true, withFileTypes: true }
   const file = path.join(entry.parentPath, entry.name);
   const data = await readFile(file);
   if (data.length < MIN_SIZE) continue;
-  const br = await brotli(data, { params: { [constants.BROTLI_PARAM_QUALITY]: 11, [constants.BROTLI_PARAM_SIZE_HINT]: data.length } });
+  const br = await brotli(data, {
+    params: { [constants.BROTLI_PARAM_QUALITY]: 11, [constants.BROTLI_PARAM_SIZE_HINT]: data.length },
+  });
   await writeFile(`${file}.br`, br);
   await writeFile(`${file}.gz`, await gz(data, { level: 9 }));
   count += 1;
   before += data.length;
   after += br.length;
 }
-console.info(`[compress] ${count} Dateien, ${(before / 1024).toFixed(0)} KB → ${(after / 1024).toFixed(0)} KB (Brotli)`);
+console.info(
+  `[compress] ${count} Dateien, ${(before / 1024).toFixed(0)} KB → ${(after / 1024).toFixed(0)} KB (Brotli)`,
+);

@@ -41,7 +41,14 @@ async function pickEncoding(file, acceptEncoding = '') {
   if (!COMPRESSIBLE.has(path.extname(file).toLowerCase())) return null;
   const accepted = new Set(acceptEncoding.split(',').map((e) => e.split(';')[0].trim().toLowerCase()));
   for (const [encoding, suffix] of Object.entries(ENCODINGS)) {
-    if (accepted.has(encoding) && (await stat(file + suffix).then((s) => s.isFile(), () => false))) return encoding;
+    if (
+      accepted.has(encoding) &&
+      (await stat(file + suffix).then(
+        (s) => s.isFile(),
+        () => false,
+      ))
+    )
+      return encoding;
   }
   return null;
 }
@@ -93,7 +100,8 @@ const notFound = (res) => {
   res.end('Nicht gefunden');
 };
 
-const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const escapeHtml = (s) =>
+  s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 // Fehlerseite für Absenden ohne JS (mit JS zeigt das Frontend die Meldung selbst an)
 const htmlError = (res, status, message) => {
@@ -125,7 +133,9 @@ function readBody(req) {
       }
       chunks.push(chunk);
     });
-    req.on('end', () => { if (!failed) resolve(Buffer.concat(chunks).toString('utf8')); });
+    req.on('end', () => {
+      if (!failed) resolve(Buffer.concat(chunks).toString('utf8'));
+    });
     req.on('error', reject);
   });
 }
@@ -147,7 +157,14 @@ export async function createApp({
   let cached = { key: '', headers: null };
   async function currentHeaders() {
     const pages = await htmlPages(rootReal);
-    const times = await Promise.all(pages.map((p) => stat(path.join(rootReal, p)).then((s) => s.mtimeMs, () => 0)));
+    const times = await Promise.all(
+      pages.map((p) =>
+        stat(path.join(rootReal, p)).then(
+          (s) => s.mtimeMs,
+          () => 0,
+        ),
+      ),
+    );
     const key = pages.map((p, i) => `${p}:${times[i]}`).join('|');
     if (key !== cached.key) cached = { key, headers: securityHeaders(await inlineScriptHashes(rootReal)) };
     return cached.headers;
@@ -225,10 +242,13 @@ export async function createApp({
     const isForm = type === 'application/x-www-form-urlencoded';
     if (!isForm && type !== 'application/json') return json(res, 415, { error: 'Nicht unterstütztes Format.' });
 
-    const fail = (status, message) => (isForm ? htmlError(res, status, message) : json(res, status, { error: message }));
+    const fail = (status, message) =>
+      isForm ? htmlError(res, status, message) : json(res, status, { error: message });
 
     const ip = trustProxy
-      ? String(req.headers['x-forwarded-for'] ?? '').split(',')[0].trim() || req.socket.remoteAddress
+      ? String(req.headers['x-forwarded-for'] ?? '')
+          .split(',')[0]
+          .trim() || req.socket.remoteAddress
       : req.socket.remoteAddress;
     if (!limiter.hit(ip)) return fail(429, 'Zu viele Anfragen in kurzer Zeit. Bitte versuchen Sie es später erneut.');
 
@@ -307,6 +327,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   }
   const server = http.createServer(app);
   server.listen(port, () => {
-    console.info(`${site.name} läuft auf http://localhost:${port} (Mailversand: ${sender.mode === 'smtp' ? 'SMTP' : 'Entwicklungsmodus, nur Konsole'})`);
+    console.info(
+      `${site.name} läuft auf http://localhost:${port} (Mailversand: ${sender.mode === 'smtp' ? 'SMTP' : 'Entwicklungsmodus, nur Konsole'})`,
+    );
   });
 }

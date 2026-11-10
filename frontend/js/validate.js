@@ -4,7 +4,14 @@
 
 export const LIMITS = { name: 100, kontakt: 200, nachricht: 5000 };
 
-export const ANLIEGEN = ['Elektroinstallation', 'Altbausanierung', 'Smart Home', 'PV & Wallbox', 'E-Check', 'Sonstiges'];
+export const ANLIEGEN = [
+  'Elektroinstallation',
+  'Altbausanierung',
+  'Smart Home',
+  'PV & Wallbox',
+  'E-Check',
+  'Sonstiges',
+];
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const isPhone = (value) => /^[+\d\s()/-]+$/.test(value) && value.replace(/\D/g, '').length >= 6;

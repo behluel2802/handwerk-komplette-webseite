@@ -20,7 +20,10 @@ function variants(name, set) {
 }
 const imageHelpers = {
   // "img/ref-bad-tile-400.avif 400w, img/ref-bad-tile-600.avif 600w, …"
-  srcset: (name, set, format) => variants(name, set).map((v) => `img/${v.file}.${format} ${v.width}w`).join(', '),
+  srcset: (name, set, format) =>
+    variants(name, set)
+      .map((v) => `img/${v.file}.${format} ${v.width}w`)
+      .join(', '),
   // kleinste Variante (bzw. einzige, z. B. Lightbox-Bild)
   src: (name, set, format) => `img/${variants(name, set)[0].file}.${format}`,
   // Maße der kleinsten Variante für width/height (Seitenverhältnis, verhindert Layout-Sprünge)

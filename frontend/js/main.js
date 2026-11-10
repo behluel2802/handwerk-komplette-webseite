@@ -140,11 +140,15 @@ function initLightbox() {
   // Wischen auf Touch-Geräten
   let startX = null;
   let startY = null;
-  dialog.addEventListener('touchstart', (event) => {
-    if (event.touches.length !== 1) return;
-    startX = event.touches[0].clientX;
-    startY = event.touches[0].clientY;
-  }, { passive: true });
+  dialog.addEventListener(
+    'touchstart',
+    (event) => {
+      if (event.touches.length !== 1) return;
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+    },
+    { passive: true },
+  );
 
   dialog.addEventListener('touchend', (event) => {
     if (startX === null) return;
@@ -207,17 +211,24 @@ function initContactForm() {
 
   // Prüfregeln: js/validate.js (identisch im Backend)
   // Prüft alle Felder, gibt die fehlerhaften in Formular-Reihenfolge zurück
-  const validate = () => Object.entries(fields).filter(([key, input]) => {
-    const message = checks[key](input.value.trim());
-    setError(input, message);
-    return Boolean(message);
-  }).map(([, input]) => input);
+  const validate = () =>
+    Object.entries(fields)
+      .filter(([key, input]) => {
+        const message = checks[key](input.value.trim());
+        setError(input, message);
+        return Boolean(message);
+      })
+      .map(([, input]) => input);
 
   // Nach dem ersten Absenden live nachprüfen, damit Fehler verschwinden, sobald sie behoben sind
   Object.entries(fields).forEach(([key, input]) => {
-    const recheck = () => { if (submitted) setError(input, checks[key](input.value.trim())); };
+    const recheck = () => {
+      if (submitted) setError(input, checks[key](input.value.trim()));
+    };
     input.addEventListener('blur', recheck);
-    input.addEventListener('input', () => { if (input.getAttribute('aria-invalid') === 'true') recheck(); });
+    input.addEventListener('input', () => {
+      if (input.getAttribute('aria-invalid') === 'true') recheck();
+    });
   });
 
   const showError = (message) => {
@@ -245,7 +256,9 @@ function initContactForm() {
     }
 
     const data = Object.fromEntries(new FormData(form));
-    Object.keys(data).forEach((k) => { data[k] = String(data[k]).trim(); });
+    Object.keys(data).forEach((k) => {
+      data[k] = String(data[k]).trim();
+    });
     data.kontaktart = contactKind(data.kontakt);
     const name = data.name;
 

@@ -22,8 +22,12 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
@@ -39,7 +43,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-img, picture, svg, video {
+img,
+picture,
+svg,
+video {
   display: block;
   max-width: 100%;
   height: auto;
@@ -50,18 +57,25 @@ img, picture, svg, video {
   display: none !important;
 }
 
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font: inherit;
   color: inherit;
 }
 
-ul[class], ol[class] {
+ul[class],
+ol[class] {
   list-style: none;
   padding: 0;
 }
 
 /* --- Typografie ---------------------------------------------------------- */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   line-height: var(--lh-tight);
   font-weight: var(--fw-bold);
   color: var(--color-primary);
@@ -73,13 +87,26 @@ h1, h2, h3, h4 {
   overflow-wrap: break-word;
 }
 
-h1 { font-size: var(--fs-3xl); }
-h2 { font-size: var(--fs-2xl); margin-bottom: var(--space-5); }
-h3 { font-size: var(--fs-xl); }
-h4 { font-size: var(--fs-lg); }
+h1 {
+  font-size: var(--fs-3xl);
+}
+h2 {
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--space-5);
+}
+h3 {
+  font-size: var(--fs-xl);
+}
+h4 {
+  font-size: var(--fs-lg);
+}
 
-p { text-wrap: pretty; }
-p + p { margin-top: var(--space-4); }
+p {
+  text-wrap: pretty;
+}
+p + p {
+  margin-top: var(--space-4);
+}
 
 .lead {
   font-size: var(--fs-lg);
@@ -91,7 +118,9 @@ a {
   text-underline-offset: 0.2em;
 }
 
-a:hover { color: var(--color-primary); }
+a:hover {
+  color: var(--color-primary);
+}
 
 :focus-visible {
   outline: none;
@@ -114,7 +143,9 @@ a:hover { color: var(--color-primary); }
   transition: transform var(--transition);
 }
 
-.skip-link:focus { transform: translateY(0); }
+.skip-link:focus {
+  transform: translateY(0);
+}
 
 .visually-hidden {
   position: absolute !important;
@@ -126,7 +157,9 @@ a:hover { color: var(--color-primary); }
   white-space: nowrap;
 }
 
-.nowrap { white-space: nowrap; }
+.nowrap {
+  white-space: nowrap;
+}
 
 /* --- Layout-Helfer ------------------------------------------------------- */
 .container {
@@ -149,9 +182,15 @@ a:hover { color: var(--color-primary); }
   color: var(--color-on-primary);
 }
 
-.section--dark :is(h1, h2, h3, h4) { color: var(--color-on-primary); }
-.section--dark a:not(.btn) { color: var(--color-accent); }
-.section--dark .lead { color: var(--color-on-primary-muted); }
+.section--dark :is(h1, h2, h3, h4) {
+  color: var(--color-on-primary);
+}
+.section--dark a:not(.btn) {
+  color: var(--color-accent);
+}
+.section--dark .lead {
+  color: var(--color-on-primary-muted);
+}
 
 /* Elemente nebeneinander, umbrechend */
 .cluster {
@@ -187,11 +226,16 @@ a:hover { color: var(--color-primary); }
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color var(--transition), border-color var(--transition),
-              color var(--transition), transform var(--transition);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
 }
 
-.btn:active { transform: translateY(1px); }
+.btn:active {
+  transform: translateY(1px);
+}
 
 .btn--accent {
   background: var(--color-accent);

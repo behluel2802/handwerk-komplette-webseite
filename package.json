@@ -1,5 +1,5 @@
 {
-  "name": "handwerk-nr-eins",
+  "name": "handwerk-komplette-webseite",
   "private": true,
   "description": "Website-Vorlage für Handwerksbetriebe: statisches Frontend (Vite) + kleines Node-Backend.",
   "workspaces": [
@@ -14,9 +14,18 @@
     "build": "npm run build -w frontend",
     "start": "npm start -w backend",
     "test": "npm test --workspaces --if-present",
-    "images": "npm run images -w frontend"
+    "images": "npm run images -w frontend",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "concurrently": "^10.0.7"
-  }
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.7",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.14.0",
+    "prettier": "^3.9.10"
+  },
+  "type": "module"
 }

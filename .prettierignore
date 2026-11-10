@@ -1,0 +1,11 @@
+# Generiert
+**/dist/
+frontend/img/
+frontend/public/
+.lighthouseci/
+package-lock.json
+# HTML/Handlebars: Prettier versteht {{…}} nicht zuverlässig
+*.html
+*.hbs
+# Doku wird von Hand gepflegt (Tabellen)
+*.md

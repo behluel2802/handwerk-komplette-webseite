@@ -54,7 +54,10 @@ test('Öffnungszeiten kommen aus site.json', () => {
 test('Erreichbarkeit: offen, nach Feierabend, Feiertag, Heiligabend', () => {
   // Zeiten in UTC; Berlin = UTC+1 (Winter) bzw. UTC+2 (Sommer)
   assert.equal(openingStatus(new Date('2026-11-11T09:00:00Z')).text, 'Jetzt erreichbar – bis 17:00 Uhr'); // Mi 10:00
-  assert.equal(openingStatus(new Date('2026-11-13T14:00:00Z')).text, 'Gerade geschlossen – wieder erreichbar ab Mo 7:00 Uhr'); // Fr 15:00
+  assert.equal(
+    openingStatus(new Date('2026-11-13T14:00:00Z')).text,
+    'Gerade geschlossen – wieder erreichbar ab Mo 7:00 Uhr',
+  ); // Fr 15:00
   assert.match(openingStatus(new Date('2026-06-04T08:00:00Z')).text, /^Heute geschlossen \(Fronleichnam\)/); // Do, Hessen
   assert.match(openingStatus(new Date('2026-12-24T09:00:00Z')).text, /^Heute geschlossen \(Heiligabend\)/);
 });
